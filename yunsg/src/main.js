@@ -16,7 +16,7 @@ axios.defaults.baseURL = 'https://www.yunsc.asia'; // 替换为实际后端 API 
 
 // axios.defaults.baseURL = 'http://129.211.26.112:8889'; // 替换为实际后端 API 地址
 
-// axios.defaults.baseURL = 'http://172.24.218.174:8889';
+// axios.defaults.baseURL = 'http://172.25.165.247:8889';
 axios.defaults.timeout = 10000; // 设置请求超时时间
 
 new Vue({

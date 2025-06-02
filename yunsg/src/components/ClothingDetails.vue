@@ -4,8 +4,17 @@
     <div class="image-list">
       <h3>服饰图集:</h3>
       <div class="image-thumbnails">
-        <div v-for="(item, index) in clothingData.imageList" :key="index" class="thumbnail-container">
-          <img :src="item.image" alt="Image Thumbnail" class="thumbnail" @click="openImage(item.image)" />
+        <div
+          v-for="(item, index) in clothingData.imageList"
+          :key="index"
+          class="thumbnail-container"
+        >
+          <img
+            :src="item.image"
+            alt="Image Thumbnail"
+            class="thumbnail"
+            @click="openImage(item.image)"
+          />
         </div>
       </div>
     </div>
@@ -15,7 +24,9 @@
       <h1>{{ clothingData.name }}</h1>
       <div class="info-section">
         <p><strong>租金:</strong> ¥{{ clothingData.rent }} / 天</p>
-        <p><strong>描述:</strong> {{ clothingData.description || '暂无描述' }}</p>
+        <p>
+          <strong>描述:</strong> {{ clothingData.description || "暂无描述" }}
+        </p>
         <button class="rent-button" @click="rentClothing()">租借</button>
       </div>
     </div>
@@ -27,39 +38,64 @@
         <button class="close-button" @click="closeModal">关闭</button>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { mapState } from 'vuex';
+import axios from "axios";
+import { mapState } from "vuex";
+import MQTTService from "@/utils/MQTTService";
 
 export default {
-  name: 'ClothingDetails',
-  props: ['id'],
+  name: "ClothingDetails",
+  props: ["id"],
   data() {
     return {
-      backendUrl: 'http://192.168.137.36:5000/lease', // 请替换为实际的树莓派 IP
+      backendUrl: "http://192.168.137.36:5000/lease", // 请替换为实际的树莓派 IP
       isLoading: false,
-      message: '',
-      messageType: 'info',
+      message: "",
+      messageType: "info",
       clothingData: {},
       isModalOpen: false, // 控制提示框显示
-      modalMessage: '', // 提示框内容
+      modalMessage: "", // 提示框内容
 
       leaseOrders: {
-        'userId': '',
-        'hanfuId': '',
-      }
+        userId: "",
+        hanfuId: "",
+      },
     };
   },
   computed: {
-    ...mapState(['closestDeviceId']),
-    ...mapState(['userInfo'])
+    ...mapState(["closestDeviceId"]),
+    ...mapState(["userInfo"]),
   },
   mounted() {
     this.fetchClothingDetails();
+
+    const connectUrl = "ws://129.211.26.112:8083/mqtt";
+    const options = {
+      clean: true,
+      connectTimeout: 4000,
+      clientId: "ysc" + Math.random().toString(16).substr(2, 8),
+      username: "ysc",
+      password: "ysc",
+    };
+
+    this.mqttService = new MQTTService(connectUrl, options);
+    this.mqttService.connect();
+    this.mqttService.subscribe("control");
+
+    this.mqttService.onMessage((topic, message) => {
+      console.log(`收到消息: [${topic}] ${message}`);
+    });
+
+    // setTimeout(() => {
+    //   this.mqttService.publish('test/topic', 'Hello MQTT!');
+    // }, 2000);
+  },
+
+  beforeDestroy() {
+    this.mqttService.disconnect();
   },
   methods: {
     fetchClothingDetails() {
@@ -70,58 +106,67 @@ export default {
           this.clothingData = response.data.data;
         })
         .catch((error) => {
-          console.error('Error fetching clothing details:', error);
+          console.error("Error fetching clothing details:", error);
         });
     },
 
     async rentClothing() {
       if (this.userInfo == null) {
-        this.modalMessage = '您还未登录，请先登录！';
+        this.modalMessage = "您还未登录，请先登录！";
         this.isModalOpen = true;
 
         // 3秒后跳转到首页
         setTimeout(() => {
-          this.$router.push('/');
+          this.$router.push("/");
         }, 3000);
       } else {
         let command = this.clothingData.cabinetLocation;
         this.isLoading = true;
-        this.message = '';
+        this.message = "";
 
         this.createLesaseOrders();
 
         try {
-          const response = await fetch(this.backendUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ command }),
-          });
+          // const response = await fetch(this.backendUrl, {
+          //   method: 'POST',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          //   body: JSON.stringify({ command }),
+          // });
 
-          if (!response.ok) {
-            throw new Error('网络响应异常');
-          }
+          // if (!response.ok) {
+          //   throw new Error('网络响应异常');
+          // }
 
-          const data = await response.json();
+          // const data = await response.json();
 
-          if (data !== "无效命令") {
-            this.message = `操作成功: ${JSON.stringify(data)}`;
-            this.messageType = 'info';
-            // 弹出成功提示框
-            this.modalMessage = `租借成功！请及时前往${this.clothingData.cabinetLocation}号柜门取走衣服！`;
-            this.isModalOpen = true;
-          } else {
-              this.modalMessage=`租借操作失败，请稍后再试！`;
-          }
+          // if (data !== "无效命令") {
+          // this.message = `操作成功: ${JSON.stringify(data)}`;
+          // this.messageType = "info";
+          // 弹出成功提示框
+          this.modalMessage = `租借成功！请及时前往${this.clothingData.cabinetLocation}号柜门取走衣服！`;
 
+          // 封装消息结构体
+          const command = {
+            option: "rent",
+            action: "open", // 动作类型，比如打开柜门
+            cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+          };
 
+          // 将对象序列化为 JSON 字符串后发送
+          this.mqttService.publish("control", JSON.stringify(command));
+
+          this.isModalOpen = true;
+          // } else {
+          //     this.modalMessage=`租借操作失败，请稍后再试！`;
+          // }
         } catch (error) {
           this.message = `错误: ${error.message}`;
-          this.messageType = 'error';
+          this.messageType = "error";
 
           // 弹出失败提示框
-          this.modalMessage = '租借操作失败，请稍后再试！';
+          this.modalMessage = "租借操作失败，请稍后再试！";
           this.isModalOpen = true;
         } finally {
           this.isLoading = false;
@@ -129,25 +174,24 @@ export default {
       }
     },
 
-
     async createLesaseOrders() {
       // 假设 leaseOrders 对象需要包含租借人 ID 和衣物的 ID，这里需要将它们填充。
       this.leaseOrders.userId = this.$store.state.userInfo.userId; // 假设从 Vuex 中获取用户 ID
 
       this.leaseOrders.hanfuId = this.clothingData.hanFuId; // 假设 clothingData 包含当前衣服的 ID
-      const siteID = this.closestDeviceId
+      // const siteID = this.closestDeviceId
+      // const siteID= 13
       // console.log(this.clothingData)
       // console.log(this.leaseOrders.userId)
       // console.log(this.leaseOrders.hanfuId)
       try {
-        const response = await axios.post(`/lease/order/${siteID}`, this.leaseOrders);
+        const response = await axios.post(`/lease/order/13`, this.leaseOrders);
 
         if (response.data.msg !== "success") {
-          throw new Error('网络响应异常');
+          throw new Error("网络响应异常");
         }
-
       } catch (error) {
-        console.error('创建租借订单失败:', error);
+        console.error("创建租借订单失败:", error);
         // 出现错误时，弹出提示框
         this.modalMessage = `错误: ${error.message}`;
         this.isModalOpen = true;
@@ -156,7 +200,20 @@ export default {
 
     closeModal() {
       this.isModalOpen = false;
-      this.$router.push({ name: 'WardrobeDetails', params: { siteID: this.closestDeviceId } });
+
+      const command = {
+        option: "rent",
+        action: "close", // 动作类型，比如打开柜门
+        cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+      };
+      this.mqttService.publish("control", JSON.stringify(command));
+
+      setTimeout(() => {
+        this.$router.push({
+          name: "WardrobeDetails",
+          params: { siteID: 13 },
+        });
+      }, 1000);
     },
   },
 };
@@ -171,7 +228,7 @@ export default {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   max-width: 1200px;
   margin: 0 auto;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   overflow: hidden;
 }
 
@@ -217,7 +274,7 @@ h1 {
 .details-container {
   margin-top: 40px;
   text-align: left;
-  font-family: 'KaiTi', serif;
+  font-family: "KaiTi", serif;
 }
 
 .info-section p {

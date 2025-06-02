@@ -8,8 +8,12 @@
         <nav>
           <router-link to="/">首页</router-link>
           <!-- 动态链接到最近设备的页面 -->
-          <router-link :to="`/wardrobe/${closestDeviceId}`">探索云裳宝藏</router-link>
-          <router-link :to="`/return-clothes/${closestDeviceId}`">归衣轩</router-link>
+          <!-- <router-link :to="`/wardrobe/${closestDeviceId}`">探索云裳宝藏</router-link>
+          <router-link :to="`/return-clothes/${closestDeviceId}`">归衣轩</router-link> -->
+
+
+          <router-link :to="`/wardrobe/13`">探索云裳宝藏</router-link>
+          <router-link :to="`/return-clothes/13`">归衣轩</router-link>
         </nav>
 
         <!-- 右上角显示用户信息 -->
