@@ -149,8 +149,8 @@ export default {
 
           // 封装消息结构体
           const command = {
-            option: "rent",
-            action: "open", // 动作类型，比如打开柜门
+            option: "open",
+            action: "rent", // 动作类型，比如打开柜门
             cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
           };
 
@@ -202,8 +202,8 @@ export default {
       this.isModalOpen = false;
 
       const command = {
-        option: "rent",
-        action: "close", // 动作类型，比如打开柜门
+        option: "close",
+        action: "rent", // 动作类型，比如打开柜门
         cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
       };
       this.mqttService.publish("control", JSON.stringify(command));
