@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "tasks.h"
+#include "mqtt.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,12 +46,15 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-osThreadId_t mqttTaskHandle;
-const osThreadAttr_t mqttTask_attributes = {
-  .name = "mqttTask",
-  .stack_size = 128 * 4,
+osThreadId_t controlTaskHandle;
+const osThreadAttr_t controlTask_attributes = {
+  .name = "controlTask",
+  .stack_size = 128 * 8,
   .priority = (osPriority_t) osPriorityNormal,
 };
+
+
+osMessageQueueId_t mqttQueueHandle;
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -94,6 +98,7 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
+  mqttQueueHandle=osMessageQueueNew(10,sizeof(char*),NULL);
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -102,7 +107,7 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  mqttTaskHandle = osThreadNew(mqtt_task,NULL,&mqttTask_attributes);
+  controlTaskHandle = osThreadNew(control_task,NULL,&controlTask_attributes);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -124,6 +129,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+    osThreadTerminate(defaultTaskHandle);
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */

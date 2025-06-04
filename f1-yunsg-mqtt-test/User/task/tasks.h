@@ -2,4 +2,4 @@
 
 #include "main.h"
 
-void mqtt_task(void* argument);
+void control_task(void* argument);
