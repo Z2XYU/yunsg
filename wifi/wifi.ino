@@ -32,13 +32,17 @@ void setup_wifi(){
 }
 
 void callback(char* topic,byte* payload,unsigned int length){
+  digitalWrite(LED_PIN, LOW);
   Serial.print(topic);
   Serial.print("-");
+
 
   for(int i=0;i<length;i++){
     Serial.print((char)payload[i]);
   }
   Serial.println();
+  delay(200);
+  digitalWrite(LED_PIN, HIGH);
 }
 
 void reconnect(){
