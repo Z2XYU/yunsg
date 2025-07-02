@@ -166,7 +166,7 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-/* USER CODE END 4 */
+/* USER CODE   4 */
 
 /**
   * @brief  Period elapsed callback in non blocking mode

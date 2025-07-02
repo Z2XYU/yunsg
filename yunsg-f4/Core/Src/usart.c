@@ -21,7 +21,9 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "mqttMessageProcess.h"
+#include "user_TaskInit.h"
+#include "string.h"
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -236,4 +238,25 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 
+extern DMA_HandleTypeDef hdma_usart2_rx;
+uint8_t mqtt_rx_buffer[MQTT_MESSAGE_BUFFER_SIZE];
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    if(huart->Instance==USART2)
+    {
+        //HAL_UART_Transmit_DMA(huart,wifi_rx_buffer,Size);
+        
+        //拷贝接收数据
+        MQTTMessage_t msg;
+        memcpy(msg.data,mqtt_rx_buffer,Size);
+        msg.length=Size;
+
+        //加入消息队列
+        osMessageQueuePut(MQTTMessageQueueHandle,&msg,0,0);
+
+        //开始接收
+        HAL_UARTEx_ReceiveToIdle_DMA(huart,mqtt_rx_buffer,sizeof(mqtt_rx_buffer));
+        __HAL_DMA_DISABLE_IT(&hdma_usart2_rx,DMA_IT_HT);
+    }
+}
 /* USER CODE END 1 */
