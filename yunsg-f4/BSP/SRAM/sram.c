@@ -1,26 +1,19 @@
 /**
- ****************************************************************************************************
- * @file        sram.c
- * @author      正点原子团队(ALIENTEK)
- * @version     V1.0
- * @date        2021-11-04
- * @brief       外部SRAM 驱动代码
- * @license     Copyright (c) 2020-2032, 广州市星翼电子科技有限公司
- ****************************************************************************************************
- * @attention
- *
- * 实验平台:正点原子 探索者 F407开发板
- * 在线视频:www.yuanzige.com
- * 技术论坛:www.openedv.com
- * 公司网址:www.alientek.com
- * 购买地址:openedv.taobao.com
- *
- * 修改说明
- * V1.0 20211103
- * 第一次发布
- *
- ****************************************************************************************************
+ *  改用CubeMX配置 SRAM
+ *  STM32CubeMX配置 
+ *  Chip Select:    NE3
+ *  Memory type:    SRAM
+ *  Address:        19bits
+ *  Data:           16bits
+ *  Byte enable:    √
+ *  
+ *  Wirte operation:Enabled
+ *  
+ *  Address setup time int HCLK clock   :2
+ *  Data setup time in HCLK clock  :   8
+ *  Bus turn around time in HCLK clock: 0
  */
+
 
 #include "main.h"
 #include "stdio.h"

@@ -6,11 +6,9 @@
 #include "lvgl.h"
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
-#include "sram.h"
 
 void LCDTestTask(void *argument)
 {
-    sram_init();
 
     dwt_delay_init();
 
