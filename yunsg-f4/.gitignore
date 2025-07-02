@@ -4,7 +4,6 @@ Middlewares/Third_Party/
 Middlewares/LVGL/GUI/lvgl/src
 build/
 *.s
-*.ld
 *.mxproject
 *.stm32env
 *.cfg
