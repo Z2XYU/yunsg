@@ -3,6 +3,8 @@
 #include "mqttMessageProcess.h"
 #include "user_MessageReceiveTask.h"
 
+#include "user_LCDTestTask.h"
+
 /*Tasks -------------------------------------*/
 
 //MessageReceiveTask
@@ -11,6 +13,13 @@ const osThreadAttr_t  MessageReceiveTask_attributes = {
     .name = " MessageReceiveTask",
     .stack_size = 128 * 12,
     .priority = (osPriority_t)osPriorityNormal1,
+};
+
+osThreadId_t LCDTestTaskHandle;
+const osThreadAttr_t LCDTestTask_attributes={
+    .name ="LCDTestTask",
+    .stack_size = 128 * 12,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 
 /* Message queues ----------------------------*/
@@ -32,6 +41,7 @@ const osMessageQueueAttr_t MQTTMessageQueue_attributes = {
 
     /* add threads -----------------------------*/
     MessageReceiveTaskHandle = osThreadNew(MessageReceiveTask, NULL, &MessageReceiveTask_attributes);
+    LCDTestTaskHandle = osThreadNew(LCDTestTask, NULL, &LCDTestTask_attributes);
 
 
     
