@@ -28,6 +28,8 @@ static void btnm_event_cb(lv_event_t *e)
     lv_event_code_t code = lv_event_get_code(e); /* 获取事件类型 */
     lv_obj_t *target = lv_event_get_target(e);   /* 获取触发源 */
 
+    const char *txt = lv_textarea_get_text(textarea);
+
     if (code == LV_EVENT_VALUE_CHANGED)
     {
         id = lv_btnmatrix_get_selected_btn(target); /* 获取按键索引 */
@@ -39,21 +41,25 @@ static void btnm_event_cb(lv_event_t *e)
         else if (id == 11)
         {
             /*数据处理*/
-            //const char *txt = lv_textarea_get_text(textarea);
-            
+            // const char *txt = lv_textarea_get_text(textarea);
+
             // printf("处理逻辑 %s\n",txt);
         }
         else
         {
-            const char *txt = lv_btnmatrix_get_btn_text(target, id); /*文本区域增加按钮对应的文本*/
 
-            VoiceJson_t json;
-            strcpy(json.topic, "voice");
-            strcpy(json.msg.option, "button");
-            strcpy(json.msg.value, txt);
-            add_message_to_send_queue(&json);
+            if (strlen(txt) < 6)
+            {
+                const char *current_txt = lv_btnmatrix_get_btn_text(target, id); /*文本区域增加按钮对应的文本*/
 
-            lv_textarea_add_char(textarea, txt[0]);
+                VoiceJson_t json;
+                strcpy(json.topic, "voice");
+                strcpy(json.msg.option, "button");
+                strcpy(json.msg.value, current_txt);
+                add_message_to_send_queue(&json);
+
+                lv_textarea_add_text(textarea, current_txt); /* 添加按钮文本到文本区域 */
+            }
         }
     }
 }

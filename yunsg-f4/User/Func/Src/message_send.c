@@ -48,11 +48,10 @@ char *message_package(VoiceJson_t *json)
     char *json_str = cJSON_PrintUnformatted(root);
 
     
-    strcat(json_str, "#");
+    strcat(json_str, "!");
 
     cJSON_Delete(msg);
     cJSON_Delete(root);
-
 
     return json_str;
 }
