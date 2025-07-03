@@ -27,7 +27,7 @@ void MessageReceiveTask(void *argument)
     while (1)
     {
         MQTTMessage_t msg;
-        if (osMessageQueueGet(MQTTMessageQueueHandle, &msg, NULL, osWaitForever) == osOK)
+        if (osMessageQueueGet(MQTTMessageReceiveQueueHandle, &msg, NULL, osWaitForever) == osOK)
         {
             //printf("已接受消息\n");
             MQTTJson_t control_cmd = MQTT_Message_Parse(msg);

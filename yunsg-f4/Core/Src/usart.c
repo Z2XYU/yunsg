@@ -252,7 +252,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         msg.length=Size;
 
         //加入消息队列
-        osMessageQueuePut(MQTTMessageQueueHandle,&msg,0,0);
+        MQTT_AddMessageToQueue(&msg);
 
         //开始接收
         HAL_UARTEx_ReceiveToIdle_DMA(huart,mqtt_rx_buffer,sizeof(mqtt_rx_buffer));

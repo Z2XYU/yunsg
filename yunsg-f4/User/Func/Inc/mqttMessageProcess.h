@@ -44,6 +44,9 @@ MQTTJson_t MQTT_Message_Parse(MQTTMessage_t msg);
 // 控制柜子动作
 void MQTT_Cabinet_Control(MQTTJson_t cmd);
 
+//加入消息队列
+void MQTT_AddMessageToQueue(MQTTMessage_t *msg);
+
 #ifdef __cplusplus
 }
 #endif

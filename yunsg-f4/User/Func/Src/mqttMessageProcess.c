@@ -2,6 +2,8 @@
 #include "string.h"
 #include "cJSON.h"
 #include "stdio.h"
+#include "cmsis_os.h"
+#include "user_TaskInit.h"
 
 /**
  * @brief   解析MQTT消息，提取JSON有效载荷信息
@@ -116,4 +118,14 @@ void MQTT_Cabinet_Control(MQTTJson_t cmd)
     default:
         break;
     }
+}
+
+/**
+ * @brief   将消息加入队列
+ * @param   msg: 消息结构体
+ * @retval  None
+ */
+void MQTT_AddMessageToQueue(MQTTMessage_t *msg)
+{
+    osMessageQueuePut(MQTTMessageReceiveQueueHandle,msg,0,0);
 }

@@ -8,7 +8,7 @@ extern "C"{
 #include "main.h"
 #include "cmsis_os.h"
 
-extern osMessageQueueId_t MQTTMessageQueueHandle;
+extern osMessageQueueId_t MQTTMessageReceiveQueueHandle;
 
 void User_Tasks_Init(void);
 

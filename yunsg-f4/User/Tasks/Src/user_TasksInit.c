@@ -23,8 +23,8 @@ const osThreadAttr_t LCDTestTask_attributes={
 };
 
 /* Message queues ----------------------------*/
-osMessageQueueId_t MQTTMessageQueueHandle;
-const osMessageQueueAttr_t MQTTMessageQueue_attributes = {
+osMessageQueueId_t MQTTMessageReceiveQueueHandle;
+const osMessageQueueAttr_t MQTTMessageReceiveQueue_attributes = {
     .name="MQTTMessageQueue",
 };
 
@@ -37,12 +37,10 @@ const osMessageQueueAttr_t MQTTMessageQueue_attributes = {
  {
 
     /* add queues-------------------------------*/
-    MQTTMessageQueueHandle = osMessageQueueNew(10,sizeof(MQTTMessage_t),&MQTTMessageQueue_attributes);
+    MQTTMessageReceiveQueueHandle = osMessageQueueNew(10,sizeof(MQTTMessage_t),&MQTTMessageReceiveQueue_attributes);
 
     /* add threads -----------------------------*/
     MessageReceiveTaskHandle = osThreadNew(MessageReceiveTask, NULL, &MessageReceiveTask_attributes);
     LCDTestTaskHandle = osThreadNew(LCDTestTask, NULL, &LCDTestTask_attributes);
-
-
     
  }
