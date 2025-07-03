@@ -1,4 +1,4 @@
-#include "user_LCDTestTask.h"
+#include "user_GUIRefreshTask.h"
 #include "lcd.h"
 #include "touch.h"
 #include "cmsis_os.h"
@@ -8,7 +8,7 @@
 #include "lv_port_indev.h"
 #include "gui_app.h"
 
-void LCDTestTask(void *argument)
+void GUIRefreshTask(void *argument)
 {
 
     dwt_delay_init();

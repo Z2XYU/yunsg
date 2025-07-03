@@ -6,7 +6,7 @@ extern "C" {
 
 #include "main.h"
 
-void LCDTestTask(void *argument);
+void MessageSendTask(void *argument);
 #ifdef __cplusplus
 }
 #endif

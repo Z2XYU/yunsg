@@ -5,7 +5,7 @@
 #include "cJSON.h"
 #include "string.h"
 
-#include "mqttMessageProcess.h"
+#include "message_receive.h"
 
 extern uint8_t mqtt_rx_buffer[MQTT_MESSAGE_BUFFER_SIZE];
 extern DMA_HandleTypeDef hdma_usart2_rx;
@@ -30,9 +30,9 @@ void MessageReceiveTask(void *argument)
         if (osMessageQueueGet(MQTTMessageReceiveQueueHandle, &msg, NULL, osWaitForever) == osOK)
         {
             //printf("已接受消息\n");
-            MQTTJson_t control_cmd = MQTT_Message_Parse(msg);
+            ControlJson_t control_cmd = mqtt_message_parse(msg);
 
-            MQTT_Cabinet_Control(control_cmd);
+            control_cabinet(control_cmd);
 
             // HAL_UART_Transmit_DMA(&huart2, msg.data, msg.length);
         }

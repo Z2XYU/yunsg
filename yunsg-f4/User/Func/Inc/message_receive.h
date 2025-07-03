@@ -18,17 +18,19 @@ typedef struct
 // 控制消息结构体，包含动作、选项和柜子位置
 typedef struct
 {
-    char action[32];        // 动作字段
-    char option[32];        // 选项字段
+    char action[16];        // 动作字段
+    char option[16];        // 选项字段
     int cabinetLocation;    // 柜子位置
 } ControlMessage_t;
 
 // 解析后的MQTT JSON结构体，包含主题和控制消息
 typedef struct 
 {   
-    char topic[32];             // 主题
+    char topic[16];             // 主题
     ControlMessage_t msg;       // 控制消息
-} MQTTJson_t;
+} ControlJson_t;
+
+
 
 // 控制命令枚举
 typedef enum
@@ -38,14 +40,18 @@ typedef enum
   OPTION_CABINET_CLOSE      // 关柜命令
 } Option_e;
 
+
+
+
+
 // 解析MQTT消息为结构体
-MQTTJson_t MQTT_Message_Parse(MQTTMessage_t msg);
+ControlJson_t mqtt_message_parse(MQTTMessage_t msg);
 
 // 控制柜子动作
-void MQTT_Cabinet_Control(MQTTJson_t cmd);
+void control_cabinet(ControlJson_t cmd);
 
 //加入消息队列
-void MQTT_AddMessageToQueue(MQTTMessage_t *msg);
+void add_message_to_receive_queue(MQTTMessage_t *msg);
 
 #ifdef __cplusplus
 }
