@@ -1,4 +1,4 @@
-#include "mqttMessageProcess.h"
+#include "message_receive.h"
 #include "string.h"
 #include "cJSON.h"
 #include "stdio.h"
@@ -10,9 +10,9 @@
  * @param   msg: MQTTMessage_t 类型的原始消息
  * @retval  MQTTJson_: 结构化的JSON数据，包括topic、ControlMessage_t 字段
  */
-MQTTJson_t MQTT_Message_Parse(MQTTMessage_t msg)
+ControlJson_t mqtt_message_parse(MQTTMessage_t msg)
 {
-    MQTTJson_t mqtt_json = {0};
+    ControlJson_t mqtt_json = {0};
 
     char json_str[MQTT_MESSAGE_BUFFER_SIZE + 1] = {0};
     memcpy(json_str, msg.data, msg.length);
@@ -103,7 +103,8 @@ static Option_e control_cmd(const char *cmd)
  * @note   支持的操作包括开门（"open"）和关门（"close"），
  *         其余未知操作将被忽略。
  */
-void MQTT_Cabinet_Control(MQTTJson_t cmd)
+
+void control_cabinet(ControlJson_t cmd)
 {
     Option_e option = control_cmd(cmd.msg.option);
 
@@ -125,7 +126,9 @@ void MQTT_Cabinet_Control(MQTTJson_t cmd)
  * @param   msg: 消息结构体
  * @retval  None
  */
-void MQTT_AddMessageToQueue(MQTTMessage_t *msg)
+void add_message_to_receive_queue(MQTTMessage_t *msg)
 {
     osMessageQueuePut(MQTTMessageReceiveQueueHandle,msg,0,0);
 }
+
+

@@ -21,7 +21,7 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-#include "mqttMessageProcess.h"
+#include "message_receive.h"
 #include "user_TaskInit.h"
 #include "string.h"
 /* USER CODE END 0 */
@@ -252,7 +252,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         msg.length=Size;
 
         //加入消息队列
-        MQTT_AddMessageToQueue(&msg);
+        add_message_to_receive_queue(&msg);
 
         //开始接收
         HAL_UARTEx_ReceiveToIdle_DMA(huart,mqtt_rx_buffer,sizeof(mqtt_rx_buffer));
