@@ -76,7 +76,7 @@ void handleSerialJson(const String& jsonStr) {
 
   DeserializationError error = deserializeJson(doc, jsonStr);
   if (error) {
-    Serial.println("JSON解析失败");
+    //Serial.println("JSON解析失败");
     return;
   }
 
@@ -96,10 +96,10 @@ void handleSerialJson(const String& jsonStr) {
 
     if (value) {
       client.publish(topic, value);
-      Serial.println("已发布MQTT消息");
+      //Serial.println("已发布MQTT消息");
     }
   } else {
-    Serial.println("JSON字段不完整");
+    //Serial.println("JSON字段不完整");
   }
 }
 
@@ -126,7 +126,7 @@ void loop() {
   while (Serial.available()) {
     char c = Serial.read();
 
-    if (c == '#') {
+    if (c == '!') {
       handleSerialJson(serialBuffer);
 
       serialBuffer = "";  //清空缓存
