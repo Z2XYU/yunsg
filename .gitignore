@@ -1,4 +1,4 @@
-# Node modules
+ # Node modules
 node_modules/
 
 # Logs
@@ -39,3 +39,5 @@ coverage/
 # Optional: custom build artifacts
 *.log
 *.cache
+
+yunsg_gui/
