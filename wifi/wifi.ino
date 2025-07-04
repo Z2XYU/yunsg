@@ -1,13 +1,14 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include "config.h"
 
 //连接WIFI
-const char* ssid = "zhongxu";
-const char* password = "12345678";
+const char* ssid = SSID;
+const char* password = PASSWORD;
 
 //MQTT 服务器消息
-const char* mqtt_server = "129.211.26.112";
+const char* mqtt_server = MQTT_SERVER;
 
 //初始化客户端
 WiFiClient esp_client;
@@ -87,17 +88,15 @@ void handleSerialJson(const String& jsonStr) {
     const char* option = msg["option"];
     const char* value = msg["value"];
 
-    // Serial.print("topic: ");
-    // Serial.println(topic);
-    // Serial.print("option: ");
-    // Serial.println(option ? option : "NULL");
-    // Serial.print("value: ");
-    // Serial.println(value ? value : "NULL");
-
-    if (value) {
-      client.publish(topic, value);
-      //Serial.println("已发布MQTT消息");
+    if (option && value) {
+      StaticJsonDocument<128> sendDoc;
+      sendDoc["option"] = option;
+      sendDoc["value"] = value;
+      char buffer[128];
+      serializeJson(sendDoc, buffer);
+      client.publish(topic, buffer);
     }
+
   } else {
     //Serial.println("JSON字段不完整");
   }

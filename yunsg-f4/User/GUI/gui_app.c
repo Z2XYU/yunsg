@@ -1,6 +1,7 @@
 #include "gui_app.h"
 #include "lvgl.h"
 #include "message_send.h"
+#include "stdio.h"
 
 /*获取当前活动屏幕的宽高*/
 #define scr_act_width() lv_obj_get_width(lv_scr_act())
@@ -33,17 +34,26 @@ static void btnm_event_cb(lv_event_t *e)
     if (code == LV_EVENT_VALUE_CHANGED)
     {
         id = lv_btnmatrix_get_selected_btn(target); /* 获取按键索引 */
+        VoiceJson_t json;
 
         if (id == 9)
         {
             lv_textarea_del_char(textarea); /*删除文本区域的一个字符*/
+            strcpy(json.topic, "voice");
+            strcpy(json.msg.option, "button");
+            strcpy(json.msg.value, "*");
+            add_message_to_send_queue(&json);
         }
         else if (id == 11)
         {
             /*数据处理*/
-            // const char *txt = lv_textarea_get_text(textarea);
-
-            // printf("处理逻辑 %s\n",txt);
+            const char *txt = lv_textarea_get_text(textarea);
+            printf("判断是否存在 %s\n", txt);
+            strcpy(json.topic, "voice");
+            strcpy(json.msg.option, "button");
+            strcpy(json.msg.value, "#");
+            add_message_to_send_queue(&json);
+            lv_textarea_set_text(textarea,"");
         }
         else
         {
@@ -51,13 +61,11 @@ static void btnm_event_cb(lv_event_t *e)
             if (strlen(txt) < 6)
             {
                 const char *current_txt = lv_btnmatrix_get_btn_text(target, id); /*文本区域增加按钮对应的文本*/
-
                 VoiceJson_t json;
                 strcpy(json.topic, "voice");
                 strcpy(json.msg.option, "button");
                 strcpy(json.msg.value, current_txt);
                 add_message_to_send_queue(&json);
-
                 lv_textarea_add_text(textarea, current_txt); /* 添加按钮文本到文本区域 */
             }
         }
