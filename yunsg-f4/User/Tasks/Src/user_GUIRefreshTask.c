@@ -16,6 +16,7 @@ void GUIRefreshTask(void *argument)
     lv_init();
     lv_port_disp_init();
     lv_port_indev_init();
+    
 
     gui_app();
     while (1)
