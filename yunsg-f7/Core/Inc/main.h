@@ -57,6 +57,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define HC_SR04_Trig1_Pin GPIO_PIN_11
+#define HC_SR04_Trig1_GPIO_Port GPIOD
+#define HC_SR04_Trig2_Pin GPIO_PIN_3
+#define HC_SR04_Trig2_GPIO_Port GPIOG
+#define LCD_BL_Pin GPIO_PIN_5
+#define LCD_BL_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
