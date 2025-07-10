@@ -42,7 +42,7 @@ void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 216-1;
+  htim4.Init.Prescaler = 108-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -186,7 +186,12 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
       if (sensor->cap_data.echo_time_us > 100 && sensor->cap_data.echo_time_us < 30000) // 约1.7cm~5m
       {
         /*遗留bug 1us 往返距离除以2 其实不是真实值 ，不需要除以2才是真是结果 ，不知道为什么*/
-        sensor->cap_data.distance_cm = (sensor->cap_data.echo_time_us * 0.0343f);
+        /*------------------------------------*/
+        /**
+         * 查数据手册才发现 主频216MHz， 经过APB1 1/4分频后 
+         * APB1 timer 也就是TIM4 频率其实为108，所以重新设置定时器分屏系数
+         */
+        sensor->cap_data.distance_cm = (sensor->cap_data.echo_time_us * 0.0343f)/2.0f;
       }
       else
       {

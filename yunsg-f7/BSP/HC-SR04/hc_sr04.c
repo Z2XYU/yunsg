@@ -40,9 +40,10 @@ void hc_sr04_timer_start(HC_SR04_Sensor_t *sensor)
 void hc_sr04_measurement_start(HC_SR04_Sensor_t *sensor)
 {
     __HAL_TIM_SET_COUNTER(sensor->tim.htim,0);
-    HAL_TIM_IC_Start_IT(sensor->tim.htim, sensor->tim.tim_channel); // 必须调用
+    
     HAL_GPIO_WritePin(sensor->trig.trig_port, sensor->trig.trig_pin, GPIO_PIN_SET);
     dwt_delay_us(10);
+    HAL_TIM_IC_Start_IT(sensor->tim.htim, sensor->tim.tim_channel); // 必须调用
     HAL_GPIO_WritePin(sensor->trig.trig_port, sensor->trig.trig_pin, GPIO_PIN_RESET);
 }
 
