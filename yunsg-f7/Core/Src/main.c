@@ -266,7 +266,9 @@ int main(void)
   MX_LTDC_Init();
   MX_CRC_Init();
   /* USER CODE BEGIN 2 */
+  dwt_init();
   sdram_init();
+
   lcd_init();
   tp_dev.init();
 

@@ -654,35 +654,6 @@ void lcd_set_window(uint16_t sx, uint16_t sy, uint16_t width, uint16_t height)
     }
 }
 
-/**
- * @brief       SRAM底层驱动，时钟使能，引脚分配
- * @note        此函数会被HAL_SRAM_Init()调用,初始化读写总线引脚
- * @param       hsram:SRAM句柄
- * @retval      无
- */
-// void HAL_SRAM_MspInit(SRAM_HandleTypeDef *hsram)
-// {
-//     GPIO_InitTypeDef gpio_init_struct;
-
-//     __HAL_RCC_FMC_CLK_ENABLE();             /* 使能FMC时钟 */
-//     __HAL_RCC_GPIOD_CLK_ENABLE();           /* 使能GPIOD时钟 */
-//     __HAL_RCC_GPIOE_CLK_ENABLE();           /* 使能GPIOE时钟 */
-
-//     /* 初始化PD0,1,4,5,7,8,9,10,13,14,15 */
-//     gpio_init_struct.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_7| \
-//                            GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_13| GPIO_PIN_14 | GPIO_PIN_15;
-//     gpio_init_struct.Mode = GPIO_MODE_AF_PP;            /* 推挽复用 */
-//     gpio_init_struct.Pull = GPIO_PULLUP;                /* 上拉 */
-//     gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;      /* 高速 */
-//     gpio_init_struct.Alternate = GPIO_AF12_FMC;         /* 复用为FMC */
-
-//     HAL_GPIO_Init(GPIOD, &gpio_init_struct);            /* 初始化 */
-
-//     /* 初始化PE7,8,9,10,11,12,13,14,15 */
-//     gpio_init_struct.Pin = GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 \
-//                            | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
-//     HAL_GPIO_Init(GPIOE, &gpio_init_struct);
-// }
 
 /**
  * @brief       配置MPU的region,外部SRAM区配置为透写模式
@@ -933,7 +904,7 @@ void lcd_init(void)
         FMC_NORSRAM_Extended_Timing_Init(g_sram_handle.Extended, &fmc_write_struct, g_sram_handle.Init.NSBank, g_sram_handle.Init.ExtendedMode);
     }
 
-    lcd_display_dir(0); /* 默认为竖屏 */
+    lcd_display_dir(1); /* 默认为竖屏 */
     LCD_BL(1);          /* 点亮背光 */
     lcd_clear(WHITE);
 }
