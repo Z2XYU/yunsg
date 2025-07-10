@@ -16,7 +16,7 @@
  *      DEFINES
  *********************/
 #define MY_DISP_HOR_RES 800
-#define MY_DISP_VER_RES 30
+#define MY_DISP_VER_RES 480
 /**********************
  *      TYPEDEFS
  **********************/
@@ -33,8 +33,7 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
 /**********************
  *  STATIC VARIABLES
  **********************/
-// static lv_color_t buf_1[MY_DISP_HOR_RES * MY_DISP_VER_RES] __attribute__ ((section (".ext_sram")));
-// static lv_color_t buf_2[MY_DISP_HOR_RES * MY_DISP_VER_RES] __attribute__ ((section (".ext_sram")));
+
 
 #define BUF_SIZE (MY_DISP_HOR_RES * MY_DISP_VER_RES)
 
@@ -42,6 +41,15 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
 
 //lv_color_t *buf_1 = (lv_color_t *)sram_pool;
 //lv_color_t *buf_2 = (lv_color_t *)(sram_pool + BUF_SIZE * sizeof(lv_color_t));
+
+#define FRAMEBUFFER_SIZE (1280 * 800 * 2) // 显示器主帧缓存大小
+#define LVGL_BUF_SIZE   (800 * 480)       // LVGL 缓冲区大小（像素）
+
+// 将缓冲区放入 .sdram_data 段，链接器会自动分配地址（连续）
+//__attribute__((section(".sdram_data"))) static lv_color_t framebuffer[1280 * 800];   // 主帧缓存
+__attribute__((section(".sdram_data"))) static lv_color_t buf_1[LVGL_BUF_SIZE];      // LVGL 缓冲区1
+__attribute__((section(".sdram_data"))) static lv_color_t buf_2[LVGL_BUF_SIZE];      // LVGL 缓冲区2
+
 
 /**********************
  *      MACROS
@@ -85,8 +93,8 @@ void lv_port_disp_init(void)
 
     /* Example for 1) */
     static lv_disp_draw_buf_t draw_buf_dsc_1;
-    static lv_color_t buf_1[MY_DISP_HOR_RES * 30];                          /*A buffer for 10 rows*/
-    lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * MY_DISP_VER_RES);   /*Initialize the display buffer*/
+    //static lv_color_t buf_1[MY_DISP_HOR_RES * 30];                          /*A buffer for 10 rows*/
+    lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, buf_2, MY_DISP_HOR_RES * MY_DISP_VER_RES);   /*Initialize the display buffer*/
 
     // /* Example for 2) */
     // static lv_disp_draw_buf_t draw_buf_dsc_2;

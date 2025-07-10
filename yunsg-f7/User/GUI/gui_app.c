@@ -22,55 +22,55 @@ static const char *num_map[] = {"1", "2", "3", "\n",
  * @param  *e ：事件相关参数的集合，它包含了该事件的所有数据
  * @return 无
  */
-// static void btnm_event_cb(lv_event_t *e)
-// {
-//     uint8_t id;
+static void btnm_event_cb(lv_event_t *e)
+{
+    uint8_t id;
 
-//     lv_event_code_t code = lv_event_get_code(e); /* 获取事件类型 */
-//     lv_obj_t *target = lv_event_get_target(e);   /* 获取触发源 */
+    lv_event_code_t code = lv_event_get_code(e); /* 获取事件类型 */
+    lv_obj_t *target = lv_event_get_target(e);   /* 获取触发源 */
 
-//     const char *txt = lv_textarea_get_text(textarea);
+    const char *txt = lv_textarea_get_text(textarea);
 
-//     if (code == LV_EVENT_VALUE_CHANGED)
-//     {
-//         id = lv_btnmatrix_get_selected_btn(target); /* 获取按键索引 */
-//         VoiceJson_t json;
+    if (code == LV_EVENT_VALUE_CHANGED)
+    {
+        id = lv_btnmatrix_get_selected_btn(target); /* 获取按键索引 */
+        //VoiceJson_t json;
 
-//         if (id == 9)
-//         {
-//             lv_textarea_del_char(textarea); /*删除文本区域的一个字符*/
-//             strcpy(json.topic, "voice");
-//             strcpy(json.msg.option, "button");
-//             strcpy(json.msg.value, "*");
-//             add_message_to_send_queue(&json);
-//         }
-//         else if (id == 11)
-//         {
-//             /*数据处理*/
-//             const char *txt = lv_textarea_get_text(textarea);
-//             printf("判断是否存在 %s\n", txt);
-//             strcpy(json.topic, "voice");
-//             strcpy(json.msg.option, "button");
-//             strcpy(json.msg.value, "#");
-//             add_message_to_send_queue(&json);
-//             lv_textarea_set_text(textarea,"");
-//         }
-//         else
-//         {
+        if (id == 9)
+        {
+            lv_textarea_del_char(textarea); /*删除文本区域的一个字符*/
+            //strcpy(json.topic, "voice");
+            //strcpy(json.msg.option, "button");
+            //strcpy(json.msg.value, "*");
+            //add_message_to_send_queue(&json);
+        }
+        else if (id == 11)
+        {
+            /*数据处理*/
+            // const char *txt = lv_textarea_get_text(textarea);
+            // printf("判断是否存在 %s\n", txt);
+            // strcpy(json.topic, "voice");
+            // strcpy(json.msg.option, "button");
+            // strcpy(json.msg.value, "#");
+            // add_message_to_send_queue(&json);
+            lv_textarea_set_text(textarea,"");
+        }
+        else
+        {
 
-//             if (strlen(txt) < 6)
-//             {
-//                 const char *current_txt = lv_btnmatrix_get_btn_text(target, id); /*文本区域增加按钮对应的文本*/
-//                 VoiceJson_t json;
-//                 strcpy(json.topic, "voice");
-//                 strcpy(json.msg.option, "button");
-//                 strcpy(json.msg.value, current_txt);
-//                 add_message_to_send_queue(&json);
-//                 lv_textarea_add_text(textarea, current_txt); /* 添加按钮文本到文本区域 */
-//             }
-//         }
-//     }
-// }
+            if (strlen(txt) < 6)
+            {
+                const char *current_txt = lv_btnmatrix_get_btn_text(target, id); /*文本区域增加按钮对应的文本*/
+                // VoiceJson_t json;
+                // strcpy(json.topic, "voice");
+                // strcpy(json.msg.option, "button");
+                // strcpy(json.msg.value, current_txt);
+                // add_message_to_send_queue(&json);
+                lv_textarea_add_text(textarea, current_txt); /* 添加按钮文本到文本区域 */
+            }
+        }
+    }
+}
 
 void gui_app(void)
 {
@@ -115,5 +115,5 @@ void gui_app(void)
     lv_obj_set_style_bg_opa(btnm, 0, LV_PART_MAIN);                         /* 设置主体背景透明度 */
     lv_obj_set_style_bg_opa(btnm, 0, LV_PART_ITEMS);                        /* 设置按钮背景透明度 */
     lv_obj_set_style_shadow_width(btnm, 0, LV_PART_ITEMS);                  /* 去除按钮阴影 */
-    //lv_obj_add_event_cb(btnm, btnm_event_cb, LV_EVENT_VALUE_CHANGED, NULL); /* 设置按钮矩阵回调 */
+    lv_obj_add_event_cb(btnm, btnm_event_cb, LV_EVENT_VALUE_CHANGED, NULL); /* 设置按钮矩阵回调 */
 }
