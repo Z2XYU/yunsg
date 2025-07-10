@@ -79,7 +79,7 @@ void MX_LTDC_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN LTDC_Init 2 */
-  LTDC_ParameterInit();
+  
   /* USER CODE END LTDC_Init 2 */
 
 }

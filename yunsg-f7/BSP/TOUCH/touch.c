@@ -233,13 +233,13 @@ static uint8_t tp_read_xy2(uint16_t *x, uint16_t *y)
  */
 static void tp_draw_touch_point(uint16_t x, uint16_t y, uint16_t color)
 {
-    LCD_DrawLine(x - 12, y, x + 13, y); /* 横线 */
-    LCD_DrawLine(x, y - 12, x, y + 13); /* 竖线 */
-    LTDC_Draw_Point(x + 1, y + 1, color);
-    LTDC_Draw_Point(x - 1, y + 1, color);
-    LTDC_Draw_Point(x + 1, y - 1, color);
-    LTDC_Draw_Point(x - 1, y - 1, color);
-    LCD_Draw_Circle(x, y, 6);            /* 画中心圈 */
+    lcd_draw_line(x - 12, y, x + 13, y, color); /* 横线 */
+    lcd_draw_line(x, y - 12, x, y + 13, color); /* 竖线 */
+    lcd_draw_point(x + 1, y + 1, color);
+    lcd_draw_point(x - 1, y + 1, color);
+    lcd_draw_point(x + 1, y - 1, color);
+    lcd_draw_point(x - 1, y - 1, color);
+    lcd_draw_circle(x, y, 6, color);            /* 画中心圈 */
 }
 
 /**
@@ -250,10 +250,10 @@ static void tp_draw_touch_point(uint16_t x, uint16_t y, uint16_t color)
  */
 void tp_draw_big_point(uint16_t x, uint16_t y, uint16_t color)
 {
-    LTDC_Draw_Point(x, y, color);       /* 中心点 */
-    LTDC_Draw_Point(x + 1, y, color);
-    LTDC_Draw_Point(x, y + 1, color);
-    LTDC_Draw_Point(x + 1, y + 1, color);
+    lcd_draw_point(x, y, color);       /* 中心点 */
+    lcd_draw_point(x + 1, y, color);
+    lcd_draw_point(x, y + 1, color);
+    lcd_draw_point(x + 1, y + 1, color);
 }
 
 /******************************************************************************************/
@@ -305,8 +305,7 @@ uint8_t tp_scan(uint8_t mode)
         }
     }
 
-    return tp_dev.sta & 0x8000; 
- /* 返回当前的触屏状态 */
+    return tp_dev.sta & TP_PRES_DOWN; /* 返回当前的触屏状态 */
 }
 
 /* TP_SAVE_ADDR_BASE定义触摸屏校准参数保存在EEPROM里面的位置(起始地址)
@@ -378,19 +377,19 @@ static void tp_adjust_info_show(uint16_t xy[5][2], double px, double py)
     for (i = 0; i < 5; i++)   /* 显示5个物理坐标值 */
     {
         sprintf(sbuf, "x%d:%d", i + 1, xy[i][0]);
-        LCD_ShowString(40, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf);
+        lcd_show_string(40, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf, RED);
         sprintf(sbuf, "y%d:%d", i + 1, xy[i][1]);
-        LCD_ShowString(40 + 80, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf);
+        lcd_show_string(40 + 80, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf, RED);
     }
 
     /* 显示X/Y方向的比例因子 */
-    LTDC_Fill(40, 160 + (i * 20), lcddev.width - 1, 16, WHITE);  /* 清除之前的px,py显示 */
+    lcd_fill(40, 160 + (i * 20), lcddev.width - 1, 16, WHITE);  /* 清除之前的px,py显示 */
     sprintf(sbuf, "px:%0.2f", px);
     sbuf[7] = 0; /* 添加结束符 */
-    LCD_ShowString(40, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf);
+    lcd_show_string(40, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf, RED);
     sprintf(sbuf, "py:%0.2f", py);
     sbuf[7] = 0; /* 添加结束符 */
-    LCD_ShowString(40 + 80, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf);
+    lcd_show_string(40 + 80, 160 + (i * 20), lcddev.width, lcddev.height, 16, sbuf, RED);
 }
 
 /**
@@ -412,8 +411,8 @@ void tp_adjust(void)
     uint16_t outtime = 0;
     cnt = 0;
 
-    LTDC_Clear(WHITE);       /* 清屏 */
-    LCD_ShowString(40, 40, 160, 100, 16, TP_REMIND_MSG_TBL); /* 显示提示信息 */
+    lcd_clear(WHITE);       /* 清屏 */
+    lcd_show_string(40, 40, 160, 100, 16, TP_REMIND_MSG_TBL, RED); /* 显示提示信息 */
     tp_draw_touch_point(20, 20, RED);   /* 画点1 */
     tp_dev.sta = 0;         /* 消除触发信号 */
 
@@ -448,7 +447,7 @@ void tp_adjust(void)
                     break;
 
                 case 4:
-                    LTDC_Clear(WHITE);   /* 画第五个点了, 直接清屏 */
+                    lcd_clear(WHITE);   /* 画第五个点了, 直接清屏 */
                     tp_draw_touch_point(lcddev.width / 2, lcddev.height / 2, RED);  /* 画点5 */
                     break;
 
@@ -482,12 +481,12 @@ void tp_adjust(void)
                     tp_dev.xc = pxy[4][0];      /* X轴,物理中心坐标 */
                     tp_dev.yc = pxy[4][1];      /* Y轴,物理中心坐标 */
 
-                    LTDC_Clear(WHITE);   /* 清屏 */
-                    LCD_ShowString(35, 110, lcddev.width, lcddev.height, 16, "Touch Screen Adjust OK!"); /* 校正完成 */
+                    lcd_clear(WHITE);   /* 清屏 */
+                    lcd_show_string(35, 110, lcddev.width, lcddev.height, 16, "Touch Screen Adjust OK!", BLUE); /* 校正完成 */
                     dwt_delay_ms(1000);
                     tp_save_adjust_data();
 
-                    LTDC_Clear(WHITE);   /* 清屏 */
+                    lcd_clear(WHITE);   /* 清屏 */
                     return;             /* 校正完成 */
             }
         }
@@ -585,7 +584,7 @@ uint8_t tp_init(void)
         }
         else                    /* 未校准? */
         {
-            LTDC_Clear(WHITE);   /* 清屏 */
+            lcd_clear(WHITE);   /* 清屏 */
             tp_adjust();        /* 屏幕校准 */
             tp_save_adjust_data();
         }
