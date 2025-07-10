@@ -21,7 +21,6 @@ HC_SR04_Sensor_t sensor;
 
 void UltrasonicTask(void *argument)
 {
-    // hc_sr04_timer_start(&hc_sr04_sensor[hc_sr04_selected_id]);
     while (1)
     {
         hc_sr04_measurement_start(&hc_sr04_sensor[hc_sr04_selected_id]);
@@ -29,29 +28,31 @@ void UltrasonicTask(void *argument)
 #if MOTOR_DEBUG
         printf("dist: %d\n", (int)hc_sr04_sensor[hc_sr04_selected_id].cap_data.distance_cm);
 #endif
-
-        printf("判断是否停止\n");
-
         /*门磁传感器，暂未使用*/
-        // if (option_g == OPTION_CABINET_OPEN)
-        // {
-        //     if (hc_sr04_sensor[hc_sr04_selected_id].cap_data.distance_cm >= 40)
-        //     {
-        //         /*电机停止*/
-        //         /*超声波测距停止*/
-        //         hc_sr04_measurement_stop(&hc_sr04_sensor[hc_sr04_selected_id]);
-        //     }
-        // }
-        // else if (option_g == OPTION_CABINET_CLOSE)
-        // {
-        //     if (hc_sr04_sensor[hc_sr04_selected_id].cap_data.distance_cm <= 10)
-        //     {
-        //         /*电机停止*/
+        if (option_g == OPTION_CABINET_OPEN)
+        {
+            if (hc_sr04_sensor[hc_sr04_selected_id].cap_data.distance_cm >= 40)
+            {
+                /*电机停止*/
+                printf("电机停止\n");
 
-        //         /*超声波测距停止*/
-        //         hc_sr04_measurement_stop(&hc_sr04_sensor[hc_sr04_selected_id]);
-        //     }
-        // }
+                /*超声波测距停止*/
+                hc_sr04_measurement_stop(&hc_sr04_sensor[hc_sr04_selected_id]);
+                osThreadSuspend(ultrasonicTaskHandle);
+            }
+        }
+        else if (option_g == OPTION_CABINET_CLOSE)
+        {
+            if (hc_sr04_sensor[hc_sr04_selected_id].cap_data.distance_cm <= 10)
+            {
+                /*电机停止*/
+                printf("电机停止\n");
+
+                /*超声波测距停止*/
+                hc_sr04_measurement_stop(&hc_sr04_sensor[hc_sr04_selected_id]);
+                osThreadSuspend(ultrasonicTaskHandle);
+            }
+        }
 
         osDelay(500);
     }
@@ -60,7 +61,7 @@ void UltrasonicTask(void *argument)
 void CmdReceiveTask(void *argument)
 {
     // 先挂起超声波任务
-    // osThreadSuspend(ultrasonicTaskHandle);
+    osThreadSuspend(ultrasonicTaskHandle);
     HAL_UARTEx_ReceiveToIdle_DMA(&huart2, mqtt_rx_buffer, sizeof(mqtt_rx_buffer));
     __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
     while (1)
@@ -69,11 +70,12 @@ void CmdReceiveTask(void *argument)
         if (osMessageQueueGet(MQTTMessageReceiveQueueHandle, &msg, NULL, osWaitForever) == osOK)
         {
 #if MOTOR_DEBUG
-            // printf("已接收消息\n");
+            printf("已接收消息\n");
 #endif
             /*处理解析的数据*/
             ControlJson_t control_cmd = mqtt_message_parse(msg);
             int location = control_cmd.msg.cabinetLocation;
+
 
             /*判断是否存在这个传感器*/
             uint8_t res = find_hc_sr04_sensor(location);
@@ -102,7 +104,7 @@ void CmdReceiveTask(void *argument)
                 printf("关门逻辑\n");
                 /*启动电机*/
             }
-            control_cabinet(control_cmd);
+            //control_cabinet(control_cmd);
 
             // HAL_UART_Transmit_DMA(&huart2, msg.data, msg.length);
         }

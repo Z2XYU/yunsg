@@ -1,6 +1,5 @@
 #include "cmsis_os.h"
 #include "user_TaskInit.h"
-#include "user_MessageReceiveTask.h"
 #include "user_GUIRefresh.h"
 #include "message_receive.h"
 #include "message_send.h"
@@ -9,14 +8,6 @@
 #include "sdram.h"
 #include "motor_control_tasks.h"
 /*Tasks -------------------------------------*/
-
-//MessageReceiveTask
-osThreadId_t MessageReceiveTaskHandle;
-const osThreadAttr_t  MessageReceiveTask_attributes = {
-    .name = " MessageReceiveTask",
-    .stack_size = 128 * 12,
-    .priority = (osPriority_t)osPriorityHigh,
-};
 
 osThreadId_t MessageSendTaskHandle;
 const osThreadAttr_t  MessageSendTask_attributes = {
@@ -28,7 +19,7 @@ const osThreadAttr_t  MessageSendTask_attributes = {
 osThreadId_t GUIRefreshTaskHandle;
 const osThreadAttr_t GUIRefreshTask_attributes={
     .name ="GUIRefreshTask",
-    .stack_size = 128 * 12,
+    .stack_size = 128 * 8,
     .priority = (osPriority_t)osPriorityNormal,
 };
 
@@ -37,14 +28,14 @@ const osThreadAttr_t GUIRefreshTask_attributes={
 osThreadId_t ultrasonicTaskHandle;
 const osThreadAttr_t ultrasonicTask_attributes={
     .name ="ultrasonicTask",
-    .stack_size = 128 * 8,
+    .stack_size = 128 * 4,
     .priority = (osPriority_t)osPriorityNormal2,
 };
 /*控制命令接收任务*/
 osThreadId_t CmdReceiveTaskHandle;
 const osThreadAttr_t CmdReceiveTask_attributes={
     .name ="CmdReceiveTaskTask",
-    .stack_size = 128 * 12,
+    .stack_size = 128 * 8,
     .priority = (osPriority_t)osPriorityHigh,
 };
 /*距离测量完成信号量*/
@@ -78,11 +69,10 @@ const osMessageQueueAttr_t MQTTMessageSendQueue_attributes = {
     MQTTMessageReceiveQueueHandle = osMessageQueueNew(10,sizeof(MQTTMessage_t),&MQTTMessageReceiveQueue_attributes);
     MQTTMessageSendQueueHandle = osMessageQueueNew(10,sizeof(VoiceJson_t),&MQTTMessageSendQueue_attributes);
     /* add threads -----------------------------*/
-    //MessageReceiveTaskHandle = osThreadNew(MessageReceiveTask, NULL, &MessageReceiveTask_attributes);
     GUIRefreshTaskHandle = osThreadNew(GUIRefreshTask, NULL, &GUIRefreshTask_attributes);
     //MessageSendTaskHandle = osThreadNew(MessageSendTask,NULL,&MessageSendTask_attributes);
 
     distReadySemaphoreHandle=osSemaphoreNew(1,0,NULL);
     ultrasonicTaskHandle= osThreadNew(UltrasonicTask,NULL,&ultrasonicTask_attributes);
-    //CmdReceiveTaskHandle= osThreadNew(CmdReceiveTask,NULL,&CmdReceiveTask_attributes);
+    CmdReceiveTaskHandle= osThreadNew(CmdReceiveTask,NULL,&CmdReceiveTask_attributes);
  }

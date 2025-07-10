@@ -258,7 +258,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+#define UART_DEBUG 0
 uint8_t mqtt_rx_buffer[MQTT_MESSAGE_BUFFER_SIZE];
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
@@ -270,6 +270,9 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         memcpy(msg.data,mqtt_rx_buffer,Size);
         msg.length=Size;
 
+#if UART_DEBUG
+        printf("msg:%s\n",mqtt_rx_buffer);
+#endif
         //加入消息队列
         add_message_to_receive_queue(&msg);
 
