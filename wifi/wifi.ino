@@ -116,17 +116,19 @@ void setup() {
   WiFiClient client;
   HTTPClient http;
 
-  http.begin(client,"http://129.211.26.112:8889/home");  // 请求URL
-  int httpCode = http.GET();                      // 发送GET请求
+  http.begin(client, "http://192.168.137.1:8889/act");  // 请求URL
+  int httpCode = http.GET();                              // 发送GET请求
 
-  if (httpCode > 0) {
-    Serial.printf("HTTP Response code: %d\n", httpCode);
-    String payload = http.getString();  // 获取响应内容
+  if (httpCode == 200) {
+    String payload = http.getString();
+    Serial.print("Payload length: ");
     Serial.println(payload.length());
-    Serial.println(payload.substring(0, 200));  // 打印前200个字符看有没有内容
-
+    Serial.println("Payload content:");
+    Serial.println(payload);
+    Serial.flush();
   } else {
-    Serial.printf("GET request failed, error: %s\n", http.errorToString(httpCode).c_str());
+    Serial.print("HTTP error: ");
+    Serial.println(httpCode);
   }
   http.end();  // 关闭连接
 }
