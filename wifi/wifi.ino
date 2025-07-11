@@ -2,6 +2,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "config.h"
+#include <ESP8266HTTPClient.h>
 
 //连接WIFI
 const char* ssid = SSID;
@@ -111,6 +112,23 @@ void setup() {
 
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+
+  WiFiClient client;
+  HTTPClient http;
+
+  http.begin(client,"http://129.211.26.112:8889/home");  // 请求URL
+  int httpCode = http.GET();                      // 发送GET请求
+
+  if (httpCode > 0) {
+    Serial.printf("HTTP Response code: %d\n", httpCode);
+    String payload = http.getString();  // 获取响应内容
+    Serial.println(payload.length());
+    Serial.println(payload.substring(0, 200));  // 打印前200个字符看有没有内容
+
+  } else {
+    Serial.printf("GET request failed, error: %s\n", http.errorToString(httpCode).c_str());
+  }
+  http.end();  // 关闭连接
 }
 
 void loop() {

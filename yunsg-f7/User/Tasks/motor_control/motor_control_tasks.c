@@ -9,8 +9,9 @@
 #include "cmsis_os.h"
 #include "kalman_filter.h"
 #include "cmsis_os2.h"
+#include "step_motor.h"
 
-#define MOTOR_DEBUG 1
+#define MOTOR_DEBUG 0
 
 Option_e option_g = OPTION_UNKNOWN; // 全局变量 判断现在的操作是什么
 
@@ -36,17 +37,20 @@ void UltrasonicTask(void *argument)
         // 滤波处理
         float filtered_dist = kalman_update(&ultrasonic_kf[id], raw_dist);
 
-#if MOTOR_DEBUG
+
         printf("dist_filter: %d\n", (int)filtered_dist);
-#endif
+
         /*门磁传感器，暂未使用*/
         if (option_g == OPTION_CABINET_OPEN)
         {
             if (filtered_dist >= 40)
             {
                 /*电机停止*/
+                motor_stop(&motors[0]);
+                motor_set_enable(&motors[0],MOTOR_DISABLE);
+#if MOTOR_DEBUG
                 printf("电机停止\n");
-
+#endif
                 /*超声波测距停止*/
                 hc_sr04_measurement_stop(&hc_sr04_sensor[id]);
                 osThreadSuspend(ultrasonicTaskHandle);
@@ -57,7 +61,11 @@ void UltrasonicTask(void *argument)
             if (filtered_dist <= 10)
             {
                 /*电机停止*/
+                motor_stop(&motors[0]);
+                motor_set_enable(&motors[0],MOTOR_DISABLE);
+#if MOTOR_DEBUG
                 printf("电机停止\n");
+#endif
 
                 /*超声波测距停止*/
                 hc_sr04_measurement_stop(&hc_sr04_sensor[id]);
@@ -106,13 +114,20 @@ void CmdReceiveTask(void *argument)
                 // hc_sr04_measurement_start(&hc_sr04_sensor[id]);
 
                 //printf("开门逻辑\n");
+
                 /*启动电机*/
+                motor_set_enable(&motors[0],MOTOR_ENABLE);
+                motor_set_dir(&motors[0],FORWARD);
+                motor_start(&motors[0]);
             }
             else if (option_g == OPTION_CABINET_CLOSE)
             {
                 osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
                 // hc_sr04_measurement_start(&hc_sr04_sensor[id]);
                 //printf("关门逻辑\n");
+                motor_set_enable(&motors[0],MOTOR_ENABLE);
+                motor_set_dir(&motors[0],REVERSE);
+                motor_start(&motors[0]);
                 /*启动电机*/
             }
             // control_cabinet(control_cmd);
