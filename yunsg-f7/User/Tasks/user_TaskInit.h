@@ -15,6 +15,7 @@ extern osMessageQueueId_t MQTTMessageSendQueueHandle;
 extern osThreadId_t CmdReceiveTaskHandle;
 extern osThreadId_t ultrasonicTaskHandle;
 extern osSemaphoreId_t distReadySemaphoreHandle;
+extern osEventFlagsId_t ultrasonicTaskWaitEventFlag;
 
 
 void user_tasks_init(void);

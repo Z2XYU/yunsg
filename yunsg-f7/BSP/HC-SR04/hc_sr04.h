@@ -3,6 +3,7 @@
 #include "main.h"
 #include "tim.h"
 #include "cmsis_os.h"
+#include "kalman_filter.h"
 
 #define HC_SR04_SENSOR_NUM 2
 
@@ -29,18 +30,23 @@ typedef struct {
 
 typedef struct
 {
-    uint8_t id;
-    uint8_t location;
+    int id;
+    int location;
     TrigPin_t trig;
     TIM_t tim;
     CaptureData_t cap_data;
 }HC_SR04_Sensor_t;
 
 extern HC_SR04_Sensor_t hc_sr04_sensor[HC_SR04_SENSOR_NUM];
-extern uint8_t hc_sr04_selected_id;
+// extern int hc_sr04_selected_id;
+extern KalmanFilter_t ultrasonic_kf[HC_SR04_SENSOR_NUM];
 
-uint8_t find_hc_sr04_sensor(uint8_t location);
+
+void set_selected_id_safe(int id);
+int get_selected_id_safe(void);
+int find_hc_sr04_sensor(int location);
 void hc_sr04_measurement_start(HC_SR04_Sensor_t* sensor);
 void hc_sr04_measurement_stop(HC_SR04_Sensor_t *sensor);
 void hc_sr04_timer_start(HC_SR04_Sensor_t *sensor);
+void hc_sr04_fliter_init(void);
 

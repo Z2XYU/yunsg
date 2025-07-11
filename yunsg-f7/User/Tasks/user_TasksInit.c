@@ -7,6 +7,9 @@
 #include "dwt_delay.h"
 #include "sdram.h"
 #include "motor_control_tasks.h"
+#include "step_motor.h"
+#include "tim.h"
+#include "kalman_filter.h"
 /*Tasks -------------------------------------*/
 
 osThreadId_t MessageSendTaskHandle;
@@ -19,7 +22,7 @@ const osThreadAttr_t  MessageSendTask_attributes = {
 osThreadId_t GUIRefreshTaskHandle;
 const osThreadAttr_t GUIRefreshTask_attributes={
     .name ="GUIRefreshTask",
-    .stack_size = 128 * 8,
+    .stack_size = 128 * 12,
     .priority = (osPriority_t)osPriorityNormal,
 };
 
@@ -28,7 +31,7 @@ const osThreadAttr_t GUIRefreshTask_attributes={
 osThreadId_t ultrasonicTaskHandle;
 const osThreadAttr_t ultrasonicTask_attributes={
     .name ="ultrasonicTask",
-    .stack_size = 128 * 4,
+    .stack_size = 128 * 8,
     .priority = (osPriority_t)osPriorityNormal2,
 };
 /*控制命令接收任务*/
@@ -40,6 +43,8 @@ const osThreadAttr_t CmdReceiveTask_attributes={
 };
 /*距离测量完成信号量*/
 osSemaphoreId_t distReadySemaphoreHandle;
+/*超声波任务执行等待事件*/
+osEventFlagsId_t ultrasonicTaskWaitEventFlag;
 
 /* Message queues ----------------------------*/
 
@@ -62,8 +67,11 @@ const osMessageQueueAttr_t MQTTMessageSendQueue_attributes = {
   */
  void user_tasks_init(void)
  {
-    sdram_init();
     dwt_init();
+    sdram_init();
+    
+
+    
 
     /* add queues-------------------------------*/
     MQTTMessageReceiveQueueHandle = osMessageQueueNew(10,sizeof(MQTTMessage_t),&MQTTMessageReceiveQueue_attributes);
@@ -75,4 +83,6 @@ const osMessageQueueAttr_t MQTTMessageSendQueue_attributes = {
     distReadySemaphoreHandle=osSemaphoreNew(1,0,NULL);
     ultrasonicTaskHandle= osThreadNew(UltrasonicTask,NULL,&ultrasonicTask_attributes);
     CmdReceiveTaskHandle= osThreadNew(CmdReceiveTask,NULL,&CmdReceiveTask_attributes);
+    ultrasonicTaskWaitEventFlag = osEventFlagsNew(NULL);
+    
  }
