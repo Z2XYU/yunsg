@@ -10,18 +10,19 @@
 #include "step_motor.h"
 #include "tim.h"
 #include "kalman_filter.h"
+#include "stdio.h"
 /*Tasks -------------------------------------*/
 
 osThreadId_t MessageSendTaskHandle;
-const osThreadAttr_t  MessageSendTask_attributes = {
+const osThreadAttr_t MessageSendTask_attributes = {
     .name = " MessageSendTask",
     .stack_size = 128 * 4,
     .priority = (osPriority_t)osPriorityHigh1,
 };
 
 osThreadId_t GUIRefreshTaskHandle;
-const osThreadAttr_t GUIRefreshTask_attributes={
-    .name ="GUIRefreshTask",
+const osThreadAttr_t GUIRefreshTask_attributes = {
+    .name = "GUIRefreshTask",
     .stack_size = 128 * 12,
     .priority = (osPriority_t)osPriorityNormal,
 };
@@ -29,60 +30,55 @@ const osThreadAttr_t GUIRefreshTask_attributes={
 /*电机控制*/
 /*超声波距离测量任务*/
 osThreadId_t ultrasonicTaskHandle;
-const osThreadAttr_t ultrasonicTask_attributes={
-    .name ="ultrasonicTask",
+const osThreadAttr_t ultrasonicTask_attributes = {
+    .name = "ultrasonicTask",
     .stack_size = 128 * 8,
     .priority = (osPriority_t)osPriorityNormal2,
 };
 /*控制命令接收任务*/
 osThreadId_t CmdReceiveTaskHandle;
-const osThreadAttr_t CmdReceiveTask_attributes={
-    .name ="CmdReceiveTaskTask",
-    .stack_size = 128 * 8,
+const osThreadAttr_t CmdReceiveTask_attributes = {
+    .name = "CmdReceiveTaskTask",
+    .stack_size = 128 * 12,
     .priority = (osPriority_t)osPriorityHigh,
 };
 /*距离测量完成信号量*/
 osSemaphoreId_t distReadySemaphoreHandle;
-/*超声波任务执行等待事件*/
-osEventFlagsId_t ultrasonicTaskWaitEventFlag;
+
 
 /* Message queues ----------------------------*/
 
-//接收队列
+// 接收队列
 osMessageQueueId_t MQTTMessageReceiveQueueHandle;
 const osMessageQueueAttr_t MQTTMessageReceiveQueue_attributes = {
-    .name="MQTTMessageReceiveQueue",
+    .name = "MQTTMessageReceiveQueue",
 };
 
-//发送队列
+// 发送队列
 osMessageQueueId_t MQTTMessageSendQueueHandle;
 const osMessageQueueAttr_t MQTTMessageSendQueue_attributes = {
-    .name="MQTTMessageSendQueue",
+    .name = "MQTTMessageSendQueue",
 };
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
- void user_tasks_init(void)
- {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void user_tasks_init(void)
+{
     dwt_init();
     sdram_init();
-    
-
-    
 
     /* add queues-------------------------------*/
-    MQTTMessageReceiveQueueHandle = osMessageQueueNew(10,sizeof(MQTTMessage_t),&MQTTMessageReceiveQueue_attributes);
-    MQTTMessageSendQueueHandle = osMessageQueueNew(10,sizeof(VoiceJson_t),&MQTTMessageSendQueue_attributes);
+    MQTTMessageReceiveQueueHandle = osMessageQueueNew(10, sizeof(MQTTMessage_t), &MQTTMessageReceiveQueue_attributes);
+    MQTTMessageSendQueueHandle = osMessageQueueNew(10, sizeof(VoiceJson_t), &MQTTMessageSendQueue_attributes);
     /* add threads -----------------------------*/
     GUIRefreshTaskHandle = osThreadNew(GUIRefreshTask, NULL, &GUIRefreshTask_attributes);
-    //MessageSendTaskHandle = osThreadNew(MessageSendTask,NULL,&MessageSendTask_attributes);
+    // MessageSendTaskHandle = osThreadNew(MessageSendTask,NULL,&MessageSendTask_attributes);
 
-    distReadySemaphoreHandle=osSemaphoreNew(1,0,NULL);
-    ultrasonicTaskHandle= osThreadNew(UltrasonicTask,NULL,&ultrasonicTask_attributes);
-    CmdReceiveTaskHandle= osThreadNew(CmdReceiveTask,NULL,&CmdReceiveTask_attributes);
-    ultrasonicTaskWaitEventFlag = osEventFlagsNew(NULL);
-    
- }
+    distReadySemaphoreHandle = osSemaphoreNew(1, 0, NULL);
+    ultrasonicTaskHandle = osThreadNew(UltrasonicTask, NULL, &ultrasonicTask_attributes);
+    CmdReceiveTaskHandle = osThreadNew(CmdReceiveTask, NULL, &CmdReceiveTask_attributes);
+
+}

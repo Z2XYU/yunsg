@@ -41,7 +41,7 @@ void hc_sr04_fliter_init(void)
 {
     for (int i = 0; i < HC_SR04_SENSOR_NUM; i++)
     {
-        kalman_init(&ultrasonic_kf[i], 0.05f, 0.2f, 10.0f);
+        kalman_init(&ultrasonic_kf[i], 0.05f, 0.05f, 10.0f);
     }
 }
 

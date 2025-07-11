@@ -21,10 +21,9 @@ HC_SR04_Sensor_t sensor;
 
 void UltrasonicTask(void *argument)
 {
+    osThreadSuspend(ultrasonicTaskHandle);
     while (1)
     {
-        osEventFlagsWait(ultrasonicTaskWaitEventFlag, 0x01, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
-
         int id = get_selected_id_safe();
         hc_sr04_measurement_start(&hc_sr04_sensor[id]);
         osSemaphoreAcquire(distReadySemaphoreHandle, osWaitForever);
@@ -49,7 +48,6 @@ void UltrasonicTask(void *argument)
                 printf("电机停止\n");
 
                 /*超声波测距停止*/
-                osEventFlagsClear(ultrasonicTaskWaitEventFlag,0x01);
                 hc_sr04_measurement_stop(&hc_sr04_sensor[id]);
                 osThreadSuspend(ultrasonicTaskHandle);
             }
@@ -62,7 +60,6 @@ void UltrasonicTask(void *argument)
                 printf("电机停止\n");
 
                 /*超声波测距停止*/
-                osEventFlagsClear(ultrasonicTaskWaitEventFlag,0x01);
                 hc_sr04_measurement_stop(&hc_sr04_sensor[id]);
                 osThreadSuspend(ultrasonicTaskHandle);
             }
@@ -85,7 +82,7 @@ void CmdReceiveTask(void *argument)
         if (osMessageQueueGet(MQTTMessageReceiveQueueHandle, &msg, NULL, osWaitForever) == osOK)
         {
 #if MOTOR_DEBUG
-            printf("已接收消息\n");
+            //printf("已接收消息\n");
 #endif
             /*处理解析的数据*/
             ControlJson_t control_cmd = mqtt_message_parse(msg);
@@ -102,21 +99,20 @@ void CmdReceiveTask(void *argument)
                 set_selected_id_safe(res);
 
             option_g = control_cmd_prase(control_cmd.msg.option);
-            osEventFlagsSet(ultrasonicTaskWaitEventFlag,0x01);
 
             if (option_g == OPTION_CABINET_OPEN)
             {
-                // osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
+                osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
                 // hc_sr04_measurement_start(&hc_sr04_sensor[id]);
 
-                printf("开门逻辑\n");
+                //printf("开门逻辑\n");
                 /*启动电机*/
             }
             else if (option_g == OPTION_CABINET_CLOSE)
             {
-                // osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
+                osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
                 // hc_sr04_measurement_start(&hc_sr04_sensor[id]);
-                printf("关门逻辑\n");
+                //printf("关门逻辑\n");
                 /*启动电机*/
             }
             // control_cabinet(control_cmd);
