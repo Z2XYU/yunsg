@@ -2,7 +2,7 @@
 #include "tim.h"
 #include "cmsis_os.h"
 
-static step_motor_selected_id=0;
+static int step_motor_selected_id=0;
 
 StepMotor_t motors[STEP_MOTOR_NUM]=
 {

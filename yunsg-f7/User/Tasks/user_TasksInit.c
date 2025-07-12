@@ -12,6 +12,13 @@
 #include "kalman_filter.h"
 #include "stdio.h"
 /*Tasks -------------------------------------*/
+/*GUI系统*/
+osThreadId_t GUIRefreshTaskHandle;
+const osThreadAttr_t GUIRefreshTask_attributes = {
+    .name = "GUIRefreshTask",
+    .stack_size = 128 * 12,
+    .priority = (osPriority_t)osPriorityNormal,
+};
 
 osThreadId_t MessageSendTaskHandle;
 const osThreadAttr_t MessageSendTask_attributes = {
@@ -20,14 +27,14 @@ const osThreadAttr_t MessageSendTask_attributes = {
     .priority = (osPriority_t)osPriorityHigh1,
 };
 
-osThreadId_t GUIRefreshTaskHandle;
-const osThreadAttr_t GUIRefreshTask_attributes = {
-    .name = "GUIRefreshTask",
-    .stack_size = 128 * 12,
-    .priority = (osPriority_t)osPriorityNormal,
+/*电控系统*/
+/*RFID检测任务*/
+osThreadId_t rfidDetectionTaskHandle;
+const osThreadAttr_t rfidDetectionTask_attributes = {
+    .name = "rfidDetectionTask",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityNormal2,
 };
-
-/*电机控制*/
 /*超声波距离测量任务*/
 osThreadId_t ultrasonicTaskHandle;
 const osThreadAttr_t ultrasonicTask_attributes = {
@@ -44,7 +51,11 @@ const osThreadAttr_t CmdReceiveTask_attributes = {
 };
 /*距离测量完成信号量*/
 osSemaphoreId_t distReadySemaphoreHandle;
+/*rfid检测正确信号量*/
+osSemaphoreId_t rfidReadySemaphoreHandle;
 
+/*温控系统*/
+/*SH40温度检测*/
 
 /* Message queues ----------------------------*/
 
@@ -74,11 +85,15 @@ void user_tasks_init(void)
     MQTTMessageReceiveQueueHandle = osMessageQueueNew(10, sizeof(MQTTMessage_t), &MQTTMessageReceiveQueue_attributes);
     MQTTMessageSendQueueHandle = osMessageQueueNew(10, sizeof(VoiceJson_t), &MQTTMessageSendQueue_attributes);
     /* add threads -----------------------------*/
-    GUIRefreshTaskHandle = osThreadNew(GUIRefreshTask, NULL, &GUIRefreshTask_attributes);
-    // MessageSendTaskHandle = osThreadNew(MessageSendTask,NULL,&MessageSendTask_attributes);
 
+    /*GUI图形化页面*/
+    GUIRefreshTaskHandle = osThreadNew(GUIRefreshTask, NULL, &GUIRefreshTask_attributes);
+    MessageSendTaskHandle = osThreadNew(MessageSendTask, NULL, &MessageSendTask_attributes); // 备注：后续改为语音发送
+
+    /*电控系统*/
     distReadySemaphoreHandle = osSemaphoreNew(1, 0, NULL);
+    rfidReadySemaphoreHandle = osSemaphoreNew(1, 0, NULL);
     ultrasonicTaskHandle = osThreadNew(UltrasonicTask, NULL, &ultrasonicTask_attributes);
     CmdReceiveTaskHandle = osThreadNew(CmdReceiveTask, NULL, &CmdReceiveTask_attributes);
-
+    rfidDetectionTaskHandle = osThreadNew(rfidDetectionTask, NULL, &rfidDetectionTask_attributes);
 }

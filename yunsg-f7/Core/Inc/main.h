@@ -63,10 +63,22 @@ void Error_Handler(void);
 #define MOTOR_DIR_1_GPIO_Port GPIOE
 #define MOTOR_STEP_1_Pin GPIO_PIN_0
 #define MOTOR_STEP_1_GPIO_Port GPIOA
+#define RC522_CS_Pin GPIO_PIN_4
+#define RC522_CS_GPIO_Port GPIOA
+#define RC522_SCK_Pin GPIO_PIN_5
+#define RC522_SCK_GPIO_Port GPIOA
+#define RC522_MISO_Pin GPIO_PIN_6
+#define RC522_MISO_GPIO_Port GPIOA
+#define LED_Pin GPIO_PIN_1
+#define LED_GPIO_Port GPIOB
+#define RC522_RST_Pin GPIO_PIN_2
+#define RC522_RST_GPIO_Port GPIOB
 #define HC_SR04_Trig1_Pin GPIO_PIN_11
 #define HC_SR04_Trig1_GPIO_Port GPIOD
 #define HC_SR04_Trig2_Pin GPIO_PIN_3
 #define HC_SR04_Trig2_GPIO_Port GPIOG
+#define RC522_MOSI_Pin GPIO_PIN_7
+#define RC522_MOSI_GPIO_Port GPIOD
 #define LCD_BL_Pin GPIO_PIN_5
 #define LCD_BL_GPIO_Port GPIOB
 

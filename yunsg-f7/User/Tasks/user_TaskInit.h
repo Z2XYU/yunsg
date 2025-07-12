@@ -14,8 +14,11 @@ extern osMessageQueueId_t MQTTMessageSendQueueHandle;
 /*电机控制*/
 extern osThreadId_t CmdReceiveTaskHandle;
 extern osThreadId_t ultrasonicTaskHandle;
+extern osThreadId_t rfidDetectionTaskHandle;
 extern osSemaphoreId_t distReadySemaphoreHandle;
-extern osEventFlagsId_t ultrasonicTaskWaitEventFlag;
+extern osSemaphoreId_t rfidReadySemaphoreHandle;
+
+
 
 
 void user_tasks_init(void);
