@@ -53,6 +53,10 @@ static void btnm_event_cb(lv_event_t *e)
             strcpy(json.msg.option, "button");
             strcpy(json.msg.value, "#");
             add_message_to_send_queue(&json);
+
+            /*判断请求*/
+            
+
             lv_textarea_set_text(textarea,"");
         }
         else

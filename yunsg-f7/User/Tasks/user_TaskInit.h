@@ -17,6 +17,8 @@ extern osThreadId_t ultrasonicTaskHandle;
 extern osSemaphoreId_t distReadySemaphoreHandle;
 extern osEventFlagsId_t ultrasonicTaskWaitEventFlag;
 
+/*温度控制*/
+extern osThreadId_t temperatureMeasurementTaskHandle;
 
 void user_tasks_init(void);
 

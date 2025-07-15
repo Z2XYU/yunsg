@@ -11,6 +11,7 @@
 #include "tim.h"
 #include "kalman_filter.h"
 #include "stdio.h"
+#include "env_det_task.h"
 /*Tasks -------------------------------------*/
 
 osThreadId_t MessageSendTaskHandle;
@@ -44,6 +45,14 @@ const osThreadAttr_t CmdReceiveTask_attributes = {
 };
 /*距离测量完成信号量*/
 osSemaphoreId_t distReadySemaphoreHandle;
+
+/*温度控制*/
+osThreadId_t temperatureMeasurementTaskHandle;
+const osThreadAttr_t temperatureMeasurementTask_attributes = {
+    .name = "temperatureMeasurementTaskTask",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
+};
 
 
 /* Message queues ----------------------------*/
@@ -80,5 +89,8 @@ void user_tasks_init(void)
     distReadySemaphoreHandle = osSemaphoreNew(1, 0, NULL);
     ultrasonicTaskHandle = osThreadNew(UltrasonicTask, NULL, &ultrasonicTask_attributes);
     CmdReceiveTaskHandle = osThreadNew(CmdReceiveTask, NULL, &CmdReceiveTask_attributes);
+
+    /*温控系统*/
+    temperatureMeasurementTaskHandle= osThreadNew(SH40Task,NULL,&temperatureMeasurementTask_attributes);
 
 }
