@@ -9,7 +9,7 @@ extern "C" {
 
 void CmdReceiveTask(void *argument);
 void UltrasonicTask(void *argument);
-
+void rfidDetectionTask(void *argument);
 
 #ifdef __cplusplus
 }

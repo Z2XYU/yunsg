@@ -10,6 +10,8 @@
 #include "kalman_filter.h"
 #include "cmsis_os2.h"
 #include "step_motor.h"
+#include "rc522.h"
+#include "rfid_compare.h"
 
 #define MOTOR_DEBUG 0
 
@@ -20,6 +22,24 @@ extern DMA_HandleTypeDef hdma_usart2_rx;
 
 HC_SR04_Sensor_t sensor;
 
+/*测试*/
+int clothes_id = 0;
+
+/*RFID检测任务*/
+void rfidDetectionTask(void *argument)
+{
+    RC522_Init();
+    osThreadSuspend(rfidDetectionTaskHandle);
+    while (1)
+    {
+        Cardcompare(clothes_id);
+        /*检测逻辑*/
+
+        osDelay(500);
+    }
+}
+
+/*超声波测距任务*/
 void UltrasonicTask(void *argument)
 {
     osThreadSuspend(ultrasonicTaskHandle);
@@ -37,7 +57,6 @@ void UltrasonicTask(void *argument)
         // 滤波处理
         float filtered_dist = kalman_update(&ultrasonic_kf[id], raw_dist);
 
-
         printf("dist_filter: %d\n", (int)filtered_dist);
 
         /*门磁传感器，暂未使用*/
@@ -47,7 +66,7 @@ void UltrasonicTask(void *argument)
             {
                 /*电机停止*/
                 motor_stop(&motors[0]);
-                motor_set_enable(&motors[0],MOTOR_DISABLE);
+                motor_set_enable(&motors[0], MOTOR_DISABLE);
 #if MOTOR_DEBUG
                 printf("电机停止\n");
 #endif
@@ -62,7 +81,7 @@ void UltrasonicTask(void *argument)
             {
                 /*电机停止*/
                 motor_stop(&motors[0]);
-                motor_set_enable(&motors[0],MOTOR_DISABLE);
+                motor_set_enable(&motors[0], MOTOR_DISABLE);
 #if MOTOR_DEBUG
                 printf("电机停止\n");
 #endif
@@ -77,6 +96,7 @@ void UltrasonicTask(void *argument)
     }
 }
 
+/*控制命令接收任务*/
 void CmdReceiveTask(void *argument)
 {
     // 先挂起超声波任务
@@ -90,11 +110,13 @@ void CmdReceiveTask(void *argument)
         if (osMessageQueueGet(MQTTMessageReceiveQueueHandle, &msg, NULL, osWaitForever) == osOK)
         {
 #if MOTOR_DEBUG
-            //printf("已接收消息\n");
+            // printf("已接收消息\n");
 #endif
             /*处理解析的数据*/
             ControlJson_t control_cmd = mqtt_message_parse(msg);
             int location = control_cmd.msg.cabinetLocation;
+            char action[16];
+            strcpy(action, control_cmd.msg.action);
 
             /*判断是否存在这个传感器*/
             int res = find_hc_sr04_sensor(location);
@@ -110,27 +132,43 @@ void CmdReceiveTask(void *argument)
 
             if (option_g == OPTION_CABINET_OPEN)
             {
-                osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
-                // hc_sr04_measurement_start(&hc_sr04_sensor[id]);
+                if (strcmp(action, "return") == 0)
+                {
+                    /*rfid溯源逻辑*/
+                    osThreadResume(rfidDetectionTaskHandle);
 
-                //printf("开门逻辑\n");
-
-                /*启动电机*/
-                motor_set_enable(&motors[0],MOTOR_ENABLE);
-                motor_set_dir(&motors[0],FORWARD);
-                motor_start(&motors[0]);
+                    if (osSemaphoreAcquire(rfidReadySemaphoreHandle, 10000) == osOK)
+                    {
+                        osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
+                        /*启动电机*/
+                        motor_set_enable(&motors[0], MOTOR_ENABLE);
+                        motor_set_dir(&motors[0], FORWARD);
+                        motor_start(&motors[0]);
+                        osThreadSuspend(rfidDetectionTaskHandle);
+                    }
+                    else // 等待失败
+                    {
+                        osThreadSuspend(rfidDetectionTaskHandle);
+                    }
+                }
+                else if (strcmp(action, "rent"))
+                {
+                    osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
+                    /*启动电机*/
+                    motor_set_enable(&motors[0], MOTOR_ENABLE);
+                    motor_set_dir(&motors[0], FORWARD);
+                    motor_start(&motors[0]);
+                }
             }
             else if (option_g == OPTION_CABINET_CLOSE)
             {
                 osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
-                // hc_sr04_measurement_start(&hc_sr04_sensor[id]);
-                //printf("关门逻辑\n");
-                motor_set_enable(&motors[0],MOTOR_ENABLE);
-                motor_set_dir(&motors[0],REVERSE);
+
+                motor_set_enable(&motors[0], MOTOR_ENABLE);
+                motor_set_dir(&motors[0], REVERSE);
                 motor_start(&motors[0]);
                 /*启动电机*/
             }
-            // control_cabinet(control_cmd);
 
             // HAL_UART_Transmit_DMA(&huart2, msg.data, msg.length);
         }
