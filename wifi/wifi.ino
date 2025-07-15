@@ -73,7 +73,7 @@ void reconnect() {
 }
 
 
-void handleSerialJson(const String& jsonStr) {
+void handleSerialMQTTMsg(const String& jsonStr) {
   StaticJsonDocument<256> doc;  // 注意增大容量适应嵌套结构
 
   DeserializationError error = deserializeJson(doc, jsonStr);
@@ -103,21 +103,13 @@ void handleSerialJson(const String& jsonStr) {
   }
 }
 
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, HIGH);
-  setup_wifi();
-
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
-
-  WiFiClient client;
+void handleSerialHTTPMsg(const String& jsonStr) {
+  /*发送GET请求*/
+  WiFiClient wifiClient;
   HTTPClient http;
 
-  http.begin(client, "http://192.168.137.1:8889/act");  // 请求URL
-  int httpCode = http.GET();                              // 发送GET请求
+  http.begin(wifiClient, HTTP_SERVER);    // 请求URL
+  int httpCode = http.GET();  // 发送GET请求
 
   if (httpCode == 200) {
     String payload = http.getString();
@@ -133,6 +125,18 @@ void setup() {
   http.end();  // 关闭连接
 }
 
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, HIGH);
+  setup_wifi();
+
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}
+
 void loop() {
   // put your main code here, to run repeatedly:
   if (!client.connected()) {
@@ -146,8 +150,11 @@ void loop() {
     char c = Serial.read();
 
     if (c == '!') {
-      handleSerialJson(serialBuffer);
+      handleSerialMQTTMsg(serialBuffer);
 
+      serialBuffer = "";  //清空缓存
+    } else if (c == '@') {
+      handleSerialHTTPMsg(serialBuffer);
       serialBuffer = "";  //清空缓存
     } else {
       serialBuffer += c;
