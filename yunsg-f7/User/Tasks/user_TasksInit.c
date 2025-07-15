@@ -52,19 +52,17 @@ const osThreadAttr_t CmdReceiveTask_attributes = {
 };
 /*距离测量完成信号量*/
 osSemaphoreId_t distReadySemaphoreHandle;
-/*rfid检测正确信号量*/
+/*RFID检测信号量*/
 osSemaphoreId_t rfidReadySemaphoreHandle;
-
-/*温度控制*/
-osThreadId_t temperatureMeasurementTaskHandle;
-const osThreadAttr_t temperatureMeasurementTask_attributes = {
-    .name = "temperatureMeasurementTaskTask",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityNormal,
-};
 
 /*温控系统*/
 /*SH40温度检测*/
+osThreadId_t temperatureMeasurementTaskHandle;
+const osThreadAttr_t temperatureMeasurementTask_attributes = {
+    .name = "temperatureMeasurementTask",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
+};
 
 /* Message queues ----------------------------*/
 
@@ -104,9 +102,11 @@ void user_tasks_init(void)
     rfidReadySemaphoreHandle = osSemaphoreNew(1, 0, NULL);
     ultrasonicTaskHandle = osThreadNew(UltrasonicTask, NULL, &ultrasonicTask_attributes);
     CmdReceiveTaskHandle = osThreadNew(CmdReceiveTask, NULL, &CmdReceiveTask_attributes);
-
-    /*温控系统*/
-    temperatureMeasurementTaskHandle= osThreadNew(SH40Task,NULL,&temperatureMeasurementTask_attributes);
-
     rfidDetectionTaskHandle = osThreadNew(rfidDetectionTask, NULL, &rfidDetectionTask_attributes);
+
+    
+    /*温控系统*/
+    temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
+
+    
 }
