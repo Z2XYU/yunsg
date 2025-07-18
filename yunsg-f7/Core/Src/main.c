@@ -117,6 +117,7 @@ int main(void)
   MX_SPI1_Init();
   MX_ADC1_Init();
   MX_USART3_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   
   /* USER CODE END 2 */
@@ -201,7 +202,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+#include "plasma.h"
 /* USER CODE END 4 */
 
 /**
@@ -222,7 +223,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if(htim->Instance==TIM2)
+  {
+    plasma_disable();
+  }
   /* USER CODE END Callback 1 */
 }
 

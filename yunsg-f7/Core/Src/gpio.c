@@ -56,10 +56,8 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(MOTOR_EN_1_GPIO_Port, MOTOR_EN_1_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(MOTOR_DIR_1_GPIO_Port, MOTOR_DIR_1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, PLASMA1_RELAY_Pin|MOTOR_DIR_1_Pin|MOTOR_DIR_2_Pin|MOTOR_EN_1_Pin
+                          |MOTOR_EN_2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(RC522_CS_GPIO_Port, RC522_CS_Pin, GPIO_PIN_RESET);
@@ -73,8 +71,13 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(HC_SR04_Trig2_GPIO_Port, HC_SR04_Trig2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : MOTOR_EN_1_Pin MOTOR_DIR_1_Pin */
-  GPIO_InitStruct.Pin = MOTOR_EN_1_Pin|MOTOR_DIR_1_Pin;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(PLASMA2_RELAY_GPIO_Port, PLASMA2_RELAY_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PLASMA1_RELAY_Pin MOTOR_DIR_1_Pin MOTOR_DIR_2_Pin MOTOR_EN_1_Pin
+                           MOTOR_EN_2_Pin */
+  GPIO_InitStruct.Pin = PLASMA1_RELAY_Pin|MOTOR_DIR_1_Pin|MOTOR_DIR_2_Pin|MOTOR_EN_1_Pin
+                          |MOTOR_EN_2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -107,6 +110,13 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(HC_SR04_Trig2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PLASMA2_RELAY_Pin */
+  GPIO_InitStruct.Pin = PLASMA2_RELAY_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(PLASMA2_RELAY_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LCD_BL_Pin */
   GPIO_InitStruct.Pin = LCD_BL_Pin;

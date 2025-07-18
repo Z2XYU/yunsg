@@ -125,6 +125,4 @@ void user_tasks_init(void)
     temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
     adcSensorsMeasurementTaskHandle = osThreadNew(adcSensorsTask,NULL,&adcSensorsMeasurementTask_attributes);
     onenetMsgUploadTaskHandle = osThreadNew(onenet_upload,NULL,&onenetMsgUploadTask_attributes);
-
-    
 }

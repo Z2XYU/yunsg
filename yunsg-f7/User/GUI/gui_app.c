@@ -47,8 +47,8 @@ static void btnm_event_cb(lv_event_t *e)
         else if (id == 11)
         {
             /*数据处理*/
-            const char *txt = lv_textarea_get_text(textarea);
-            printf("判断是否存在 %s\n", txt);
+            //const char *txt = lv_textarea_get_text(textarea);
+            //printf("判断是否存在 %s\n", txt);
             strcpy(json.topic, "voice");
             strcpy(json.msg.option, "button");
             strcpy(json.msg.value, "#");

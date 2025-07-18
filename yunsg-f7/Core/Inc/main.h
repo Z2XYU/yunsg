@@ -57,10 +57,16 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define MOTOR_EN_1_Pin GPIO_PIN_2
-#define MOTOR_EN_1_GPIO_Port GPIOE
+#define PLASMA1_RELAY_Pin GPIO_PIN_2
+#define PLASMA1_RELAY_GPIO_Port GPIOE
 #define MOTOR_DIR_1_Pin GPIO_PIN_3
 #define MOTOR_DIR_1_GPIO_Port GPIOE
+#define MOTOR_DIR_2_Pin GPIO_PIN_4
+#define MOTOR_DIR_2_GPIO_Port GPIOE
+#define MOTOR_EN_1_Pin GPIO_PIN_5
+#define MOTOR_EN_1_GPIO_Port GPIOE
+#define MOTOR_EN_2_Pin GPIO_PIN_6
+#define MOTOR_EN_2_GPIO_Port GPIOE
 #define ULTRAVIOLET_SENSOR_Pin GPIO_PIN_1
 #define ULTRAVIOLET_SENSOR_GPIO_Port GPIOC
 #define MOTOR_STEP_1_Pin GPIO_PIN_0
@@ -89,6 +95,8 @@ void Error_Handler(void);
 #define HC_SR04_Trig1_GPIO_Port GPIOD
 #define HC_SR04_Trig2_Pin GPIO_PIN_3
 #define HC_SR04_Trig2_GPIO_Port GPIOG
+#define PLASMA2_RELAY_Pin GPIO_PIN_3
+#define PLASMA2_RELAY_GPIO_Port GPIOI
 #define RC522_MOSI_Pin GPIO_PIN_7
 #define RC522_MOSI_GPIO_Port GPIOD
 #define LCD_BL_Pin GPIO_PIN_5

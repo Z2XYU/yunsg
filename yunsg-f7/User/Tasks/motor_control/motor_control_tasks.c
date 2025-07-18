@@ -12,6 +12,7 @@
 #include "step_motor.h"
 #include "rc522.h"
 #include "rfid_compare.h"
+#include "plasma.h"
 
 #define MOTOR_DEBUG 0
 
@@ -170,7 +171,9 @@ void CmdReceiveTask(void *argument)
                 /*启动电机*/
             }
 
-            // HAL_UART_Transmit_DMA(&huart2, msg.data, msg.length);
+            /*等离子环境净化*/
+            plasma_enable();
+
         }
     }
 }
