@@ -17,6 +17,17 @@ StepMotor_t motors[STEP_MOTOR_NUM]=
         .step_htim=&htim5,
         .step_channel=TIM_CHANNEL_1,
     },
+    {
+        .id=1,
+        .location=2,
+        .enable_pin= MOTOR_EN_2_Pin,
+        .enable_port = MOTOR_EN_2_GPIO_Port,
+        .dir_pin=MOTOR_DIR_2_Pin,
+        .dir_port=MOTOR_DIR_2_GPIO_Port,
+        .dir_positive=0,
+        .step_htim=&htim5,
+        .step_channel=TIM_CHANNEL_2,
+    }
     
 };
 
@@ -61,6 +72,7 @@ void motor_set_dir(StepMotor_t *motor,MotorDir_e dir)
     }
 }
 
+//低速匀速运行即可
 void motor_start(StepMotor_t *motor)
 {
     uint32_t psc=108000000/1000/START_FREQUENCY;

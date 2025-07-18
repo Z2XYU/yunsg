@@ -2,9 +2,9 @@
 
 #include "main.h"
 
-#define STEP_MOTOR_NUM 1
+#define STEP_MOTOR_NUM 2
 
-#define START_FREQUENCY 500
+#define START_FREQUENCY 100
 
 typedef struct
 {

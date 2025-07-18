@@ -173,7 +173,6 @@ void CmdReceiveTask(void *argument)
 
             /*等离子环境净化*/
             plasma_enable();
-
         }
     }
 }
