@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "adc.h"
 #include "crc.h"
 #include "dma.h"
 #include "dma2d.h"
@@ -114,6 +115,8 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM5_Init();
   MX_SPI1_Init();
+  MX_ADC1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   
   /* USER CODE END 2 */

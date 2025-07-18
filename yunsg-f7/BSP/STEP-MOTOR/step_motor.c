@@ -16,7 +16,8 @@ StepMotor_t motors[STEP_MOTOR_NUM]=
         .dir_positive=0,
         .step_htim=&htim5,
         .step_channel=TIM_CHANNEL_1,
-    }
+    },
+    
 };
 
 int get_selected_motor_id_safe(void)
