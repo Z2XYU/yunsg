@@ -14,7 +14,17 @@
 #include "env_det_task.h"
 #include "http_send.h"
 #include "pickup_code_inquiry.h"
+#include "iwdg_feed_task.h"
+
 /*Tasks -------------------------------------*/
+/*看门狗喂狗任务*/
+osThreadId_t iwdgFeedTaskHandle;
+const osThreadAttr_t iwdgFeedTask_attributes = {
+    .name = "iwdgFeedTask",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityRealtime,
+};
+
 /*GUI页面刷新*/
 osThreadId_t GUIRefreshTaskHandle;
 const osThreadAttr_t GUIRefreshTask_attributes = {
@@ -123,6 +133,9 @@ void user_tasks_init(void)
     MQTTMessageReceiveQueueHandle = osMessageQueueNew(10, sizeof(MQTTMessage_t), &MQTTMessageReceiveQueue_attributes);
     MQTTMessageSendQueueHandle = osMessageQueueNew(10, sizeof(VoiceJson_t), &MQTTMessageSendQueue_attributes);
     /* add threads -----------------------------*/
+
+    /*喂狗任务*/
+    iwdgFeedTaskHandle = osThreadNew(iwdgFeedTask,NULL,&iwdgFeedTask_attributes);
 
     /*GUI图形化页面*/
     GUIRefreshTaskHandle = osThreadNew(GUIRefreshTask, NULL, &GUIRefreshTask_attributes);
