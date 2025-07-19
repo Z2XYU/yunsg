@@ -11,6 +11,11 @@ extern "C"{
 extern osMessageQueueId_t MQTTMessageReceiveQueueHandle;
 extern osMessageQueueId_t MQTTMessageSendQueueHandle;
 
+/*GUI*/
+extern osThreadId_t GUIRefreshTaskHandle;
+extern osMessageQueueId_t PickupCodeMsgSendQueueHandle;
+extern osThreadId_t PickupCodeInquiryTaskHandle;
+
 /*电机控制*/
 extern osThreadId_t CmdReceiveTaskHandle;
 extern osThreadId_t ultrasonicTaskHandle;

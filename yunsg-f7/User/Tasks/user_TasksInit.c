@@ -12,21 +12,36 @@
 #include "kalman_filter.h"
 #include "stdio.h"
 #include "env_det_task.h"
+#include "http_send.h"
+#include "pickup_code_inquiry.h"
 /*Tasks -------------------------------------*/
-/*GUI系统*/
+/*GUI页面刷新*/
 osThreadId_t GUIRefreshTaskHandle;
 const osThreadAttr_t GUIRefreshTask_attributes = {
     .name = "GUIRefreshTask",
     .stack_size = 128 * 12,
     .priority = (osPriority_t)osPriorityNormal,
 };
-
+/*语音消息发送任务*/
 osThreadId_t MessageSendTaskHandle;
 const osThreadAttr_t MessageSendTask_attributes = {
     .name = " MessageSendTask",
     .stack_size = 128 * 4,
     .priority = (osPriority_t)osPriorityHigh1,
 };
+/*取件码查询任务*/
+osThreadId_t PickupCodeInquiryTaskHandle;
+const osThreadAttr_t PickupCodeInquiryTask_attributes = {
+    .name = " PickupCodeInquiryTask",
+    .stack_size = 128 * 6,
+    .priority = (osPriority_t)osPriorityHigh1,
+};
+/*取件码查询消息队列*/
+osMessageQueueId_t PickupCodeMsgSendQueueHandle;
+const osMessageQueueAttr_t PickupCodeMsgSendQueue_attributes = {
+    .name = "PickupCodeMsgSendQueue",
+};
+
 
 /*电控系统*/
 /*RFID检测任务*/
@@ -111,7 +126,10 @@ void user_tasks_init(void)
 
     /*GUI图形化页面*/
     GUIRefreshTaskHandle = osThreadNew(GUIRefreshTask, NULL, &GUIRefreshTask_attributes);
+    /*优先验证结果，想法在实践中不断产生*/
+    PickupCodeInquiryTaskHandle = osThreadNew(pickupCodeInquiryTask,NULL,&PickupCodeInquiryTask_attributes);
     MessageSendTaskHandle = osThreadNew(MessageSendTask, NULL, &MessageSendTask_attributes); // 备注：后续改为语音发送
+    PickupCodeMsgSendQueueHandle = osMessageQueueNew(10, sizeof(PickupCode_t),&PickupCodeMsgSendQueue_attributes);  
 
     /*电控系统*/
     distReadySemaphoreHandle = osSemaphoreNew(1, 0, NULL);
@@ -122,7 +140,7 @@ void user_tasks_init(void)
 
     
     /*温控系统*/
-    temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
-    adcSensorsMeasurementTaskHandle = osThreadNew(adcSensorsTask,NULL,&adcSensorsMeasurementTask_attributes);
-    onenetMsgUploadTaskHandle = osThreadNew(onenet_upload,NULL,&onenetMsgUploadTask_attributes);
+    //temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
+    //adcSensorsMeasurementTaskHandle = osThreadNew(adcSensorsTask,NULL,&adcSensorsMeasurementTask_attributes);
+    //onenetMsgUploadTaskHandle = osThreadNew(onenet_upload,NULL,&onenetMsgUploadTask_attributes);
 }

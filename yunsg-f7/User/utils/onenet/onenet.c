@@ -4,6 +4,7 @@
 #include "4g_d43.h"
 #include "dwt_delay.h"
 #include "stdio.h"
+#include "cmsis_os.h"
 #include "usart.h"
 
 uint8_t onenet_connect(void)
@@ -13,7 +14,7 @@ uint8_t onenet_connect(void)
     if(!d43_wait(3000)) return 0;
 
     d43_send_at("AT+QMTOPEN=0,\"183.230.40.39\",6002"); //打开MQTT连接
-    dwt_delay_ms(2000);
+    osDelay(2000);
 
     char cmd[128];
     sprintf(cmd,"AT+QMTCONN=0,\"%s\",\"%s\",\"\"",DEVICE_ID,API_KEY);
@@ -28,7 +29,7 @@ uint8_t onenet_publish(const char* data)
     sprintf(cmd,"AT+QMTPUB=0,0,0,0,\"%s\"",TOPIC);
     d43_send_at(cmd);
 
-    dwt_delay_ms(200);
+    osDelay(200);
 
     HAL_UART_Transmit(&huart3,(uint8_t*)data,strlen(data),1000);
     HAL_UART_Transmit(&huart3,(uint8_t*)"\x1A",1,100);   //结束符

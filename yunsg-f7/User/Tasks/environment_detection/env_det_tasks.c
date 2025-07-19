@@ -55,7 +55,7 @@ void onenet_upload(void *argument)
     printf("onenet连接成功\n");
     while (1)
     {
-        //osThreadFlagsWait(0x01, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsWait(0x01, osFlagsWaitAny, osWaitForever);
 
         char json[128];
         sprintf(json,
@@ -71,6 +71,6 @@ void onenet_upload(void *argument)
             printf("上传失败\n");
         }
 
-        osDelay(5000);
+        //osDelay(5000);
     }
 }

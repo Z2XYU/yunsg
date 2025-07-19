@@ -16,7 +16,7 @@
 
 #define MOTOR_DEBUG 0
 
-Option_e option_g = OPTION_UNKNOWN; // 全局变量 判断现在的操作是什么
+Option_e option_g = OPTION_UNKNOWN; 
 
 extern uint8_t mqtt_rx_buffer[MQTT_MESSAGE_BUFFER_SIZE];
 extern DMA_HandleTypeDef hdma_usart2_rx;

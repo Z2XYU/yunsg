@@ -2,6 +2,10 @@
 #include "lvgl.h"
 #include "message_send.h"
 #include "stdio.h"
+#include "http_send.h"
+#include "string.h"
+#include "cmsis_os.h"
+#include "user_TaskInit.h"
 
 /*获取当前活动屏幕的宽高*/
 #define scr_act_width() lv_obj_get_width(lv_scr_act())
@@ -47,7 +51,7 @@ static void btnm_event_cb(lv_event_t *e)
         else if (id == 11)
         {
             /*数据处理*/
-            //const char *txt = lv_textarea_get_text(textarea);
+            const char *txt = lv_textarea_get_text(textarea);
             //printf("判断是否存在 %s\n", txt);
             strcpy(json.topic, "voice");
             strcpy(json.msg.option, "button");
@@ -55,7 +59,11 @@ static void btnm_event_cb(lv_event_t *e)
             add_message_to_send_queue(&json);
 
             /*判断请求*/
-            
+
+            PickupCode_t code={0};
+            code.site_id=13;
+            strcpy(code.pickup_code,txt);
+            osMessageQueuePut(PickupCodeMsgSendQueueHandle,&code,0,0);
 
             lv_textarea_set_text(textarea,"");
         }

@@ -6,7 +6,7 @@ extern "C" {
 
 #include "main.h"
 
-#define MQTT_MESSAGE_BUFFER_SIZE 128  // MQTT消息缓冲区大小
+#define MQTT_MESSAGE_BUFFER_SIZE 256  // MQTT消息缓冲区大小
 
 // MQTT消息结构体，包含数据和长度
 typedef struct 
