@@ -35,7 +35,13 @@
     <div v-if="isModalOpen" class="modal" @click.self="closeModal">
       <div class="modal-content">
         <p>{{ modalMessage }}</p>
-        <button class="close-button" @click="closeModal">关闭</button>
+        <button
+          v-if="modalMessage !== '您还未登录，请先登录！'"
+          class="close-button"
+          @click="closeModal"
+        >
+          关闭
+        </button>
       </div>
     </div>
   </div>
@@ -149,9 +155,13 @@ export default {
 
           // 封装消息结构体
           const command = {
-            option: "open",
-            action: "rent", // 动作类型，比如打开柜门
-            cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+            topic: "control",
+            msg: {
+              action: "rent",
+              option: "open",
+              // 动作类型，比如打开柜门
+              cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+            },
           };
 
           // 将对象序列化为 JSON 字符串后发送
@@ -202,9 +212,13 @@ export default {
       this.isModalOpen = false;
 
       const command = {
-        option: "close",
-        action: "rent", // 动作类型，比如打开柜门
-        cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+        topic: "control",
+        msg: {
+          action: "rent",
+          option: "close",
+          // 动作类型，比如打开柜门
+          cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+        },
       };
       this.mqttService.publish("control", JSON.stringify(command));
 

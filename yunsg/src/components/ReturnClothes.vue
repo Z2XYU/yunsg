@@ -143,9 +143,12 @@ export default {
           this.location = response.data.data.location; // 获取归还地点
 
           const command = {
-            action: "return",
-            option: "open",
-            cabinetLocation: this.location,
+            topic: "control",
+            msg: {
+              action: "return",
+              option: "open",
+              cabinetLocation: this.location,
+            },
           };
 
           // 将对象序列化为 JSON 字符串后发送
@@ -162,9 +165,12 @@ export default {
     },
     closeModal() {
       const command = {
-        action: "return",
-        option: "close",
-        cabinetLocation: this.location,
+        topic: "control",
+        msg: {
+          action: "return",
+          option: "close",
+          cabinetLocation: this.location,
+        },
       };
 
       this.mqttService.publish("control", JSON.stringify(command));
