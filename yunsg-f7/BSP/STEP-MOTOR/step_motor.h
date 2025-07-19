@@ -40,6 +40,7 @@ typedef enum
 
 extern StepMotor_t motors[STEP_MOTOR_NUM];
 
+int find_step_motor(int location);
 void set_selected_motor_id_safe(int id);
 int get_selected_motor_id_safe(void);
 void motor_start(StepMotor_t *motor);

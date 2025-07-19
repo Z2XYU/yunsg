@@ -129,6 +129,17 @@ void CmdReceiveTask(void *argument)
             else
                 set_selected_id_safe(res);
 
+            int motor_id =  find_step_motor(location);
+            if(motor_id ==-1)
+            {
+                printf("不存在该位置\n");
+                continue;
+            }
+            else
+            {
+                set_selected_motor_id_safe(motor_id);
+            }
+
             option_g = control_cmd_prase(control_cmd.msg.option);
 
             if (option_g == OPTION_CABINET_OPEN)
@@ -142,9 +153,9 @@ void CmdReceiveTask(void *argument)
                     {
                         osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
                         /*启动电机*/
-                        motor_set_enable(&motors[0], MOTOR_ENABLE);
-                        motor_set_dir(&motors[0], FORWARD);
-                        motor_start(&motors[0]);
+                        motor_set_enable(&motors[motor_id], MOTOR_ENABLE);
+                        motor_set_dir(&motors[motor_id], FORWARD);
+                        motor_start(&motors[motor_id]);
                         osThreadSuspend(rfidDetectionTaskHandle);
                     }
                     else // 等待失败
@@ -156,18 +167,18 @@ void CmdReceiveTask(void *argument)
                 {
                     osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
                     /*启动电机*/
-                    motor_set_enable(&motors[0], MOTOR_ENABLE);
-                    motor_set_dir(&motors[0], FORWARD);
-                    motor_start(&motors[0]);
+                    motor_set_enable(&motors[motor_id], MOTOR_ENABLE);
+                    motor_set_dir(&motors[motor_id], FORWARD);
+                    motor_start(&motors[motor_id]);
                 }
             }
             else if (option_g == OPTION_CABINET_CLOSE)
             {
                 osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
 
-                motor_set_enable(&motors[0], MOTOR_ENABLE);
-                motor_set_dir(&motors[0], REVERSE);
-                motor_start(&motors[0]);
+                motor_set_enable(&motors[motor_id], MOTOR_ENABLE);
+                motor_set_dir(&motors[motor_id], REVERSE);
+                motor_start(&motors[motor_id]);
                 /*启动电机*/
             }
 

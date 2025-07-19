@@ -31,6 +31,18 @@ StepMotor_t motors[STEP_MOTOR_NUM]=
     
 };
 
+int find_step_motor(int location)
+{
+    for(int i=0;i<STEP_MOTOR_NUM;i++)
+    {
+        if(location==motors[i].location)
+        {
+            return motors[i].id;
+        }
+    }
+    return -1;
+}
+
 int get_selected_motor_id_safe(void)
 {
     int id;
