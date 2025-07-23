@@ -1,2 +1,5 @@
 audio_resources
 *.ini
+*.venv
+*__pycache__
+*.lgd-nfy0
