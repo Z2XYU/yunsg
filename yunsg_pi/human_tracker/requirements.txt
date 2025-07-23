@@ -1,0 +1,6 @@
+opencv-contrib-python
+adafruit-circuitpython-motor
+board
+numpy
+lgpio
+adafruit-circuitpython-pca9685

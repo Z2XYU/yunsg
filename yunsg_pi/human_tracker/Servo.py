@@ -4,10 +4,11 @@ from adafruit_motor import servo
 import board
 import busio
 
+
 class ServoController:
     def __init__(self, servo_x_channel, servo_y_channel):
         # 创建 I2C 接口
-        i2c = busio.I2C(board.SCL, board.SDA)
+        i2c = busio.I2C(board.SCL,board.SDA)
         
         # 创建 PCA9685 对象
         self.pca = PCA9685(i2c)
