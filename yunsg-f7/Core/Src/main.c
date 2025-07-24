@@ -23,6 +23,7 @@
 #include "crc.h"
 #include "dma.h"
 #include "dma2d.h"
+#include "i2c.h"
 #include "iwdg.h"
 #include "ltdc.h"
 #include "spi.h"
@@ -120,6 +121,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM2_Init();
   MX_IWDG_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   
   /* USER CODE END 2 */

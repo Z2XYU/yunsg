@@ -15,6 +15,7 @@
 #include "http_send.h"
 #include "pickup_code_inquiry.h"
 #include "iwdg_feed_task.h"
+#include "myiic.h"
 
 /*Tasks -------------------------------------*/
 /*看门狗喂狗任务*/
@@ -128,6 +129,7 @@ void user_tasks_init(void)
 {
     dwt_init();
     sdram_init();
+    iic_init();
 
     /* add queues-------------------------------*/
     MQTTMessageReceiveQueueHandle = osMessageQueueNew(10, sizeof(MQTTMessage_t), &MQTTMessageReceiveQueue_attributes);
@@ -153,7 +155,7 @@ void user_tasks_init(void)
 
     
     /*温控系统*/
-    //temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
+    temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
     //adcSensorsMeasurementTaskHandle = osThreadNew(adcSensorsTask,NULL,&adcSensorsMeasurementTask_attributes);
     //onenetMsgUploadTaskHandle = osThreadNew(onenet_upload,NULL,&onenetMsgUploadTask_attributes);
 }

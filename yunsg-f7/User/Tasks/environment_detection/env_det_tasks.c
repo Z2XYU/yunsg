@@ -14,7 +14,7 @@ void SH40Task(void *argument)
     while (1)
     {
         sh40_snesor = sh40_measurement_data();
-        osThreadFlagsSet(onenetMsgUploadTaskHandle, 0x01);
+        //osThreadFlagsSet(onenetMsgUploadTaskHandle, 0x01);
         printf("tmp:%d hum:%d\n",(int)sh40_snesor.temperature,(int)sh40_snesor.humidity);
         osDelay(5000);
     }
