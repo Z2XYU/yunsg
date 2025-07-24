@@ -24,7 +24,8 @@ extern DMA_HandleTypeDef hdma_usart2_rx;
 HC_SR04_Sensor_t sensor;
 
 /*测试*/
-int clothes_id = 0;
+//需要在结构体中加入服装id 
+static int clothes_id = -1;
 
 /*RFID检测任务*/
 void rfidDetectionTask(void *argument)
@@ -43,6 +44,7 @@ void rfidDetectionTask(void *argument)
 /*超声波测距任务*/
 void UltrasonicTask(void *argument)
 {
+    hc_sr04_fliter_init();
     osThreadSuspend(ultrasonicTaskHandle);
     while (1)
     {
@@ -100,9 +102,6 @@ void UltrasonicTask(void *argument)
 /*控制命令接收任务*/
 void CmdReceiveTask(void *argument)
 {
-    // 先挂起超声波任务
-    hc_sr04_fliter_init();
-    // osThreadSuspend(ultrasonicTaskHandle);
     HAL_UARTEx_ReceiveToIdle_DMA(&huart2, mqtt_rx_buffer, sizeof(mqtt_rx_buffer));
     __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
     while (1)
@@ -118,6 +117,8 @@ void CmdReceiveTask(void *argument)
             int location = control_cmd.msg.cabinetLocation;
             char action[16];
             strcpy(action, control_cmd.msg.action);
+
+            clothes_id = control_cmd.msg.clothesID;
 
             /*判断是否存在这个传感器*/
             int res = find_hc_sr04_sensor(location);
@@ -151,6 +152,7 @@ void CmdReceiveTask(void *argument)
 
                     if (osSemaphoreAcquire(rfidReadySemaphoreHandle, 10000) == osOK)
                     {
+                        printf("检测成功,柜门已打开\n");
                         osThreadResume(ultrasonicTaskHandle); // 在这里打开超声波测距
                         /*启动电机*/
                         motor_set_enable(&motors[motor_id], MOTOR_ENABLE);
@@ -160,6 +162,7 @@ void CmdReceiveTask(void *argument)
                     }
                     else // 等待失败
                     {
+                        printf("检测失败\n");
                         osThreadSuspend(rfidDetectionTaskHandle);
                     }
                 }

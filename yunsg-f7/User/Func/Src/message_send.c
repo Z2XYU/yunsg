@@ -31,6 +31,8 @@ void message_send(char *json_str)
     }
 }
 
+
+/*----------语音后期改为Tcp------------------*/
 char *message_package(VoiceJson_t *json)
 {
 

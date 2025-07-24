@@ -37,14 +37,14 @@ osThreadId_t MessageSendTaskHandle;
 const osThreadAttr_t MessageSendTask_attributes = {
     .name = " MessageSendTask",
     .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityHigh1,
+    .priority = (osPriority_t)osPriorityHigh2,
 };
 /*取件码查询任务*/
 osThreadId_t PickupCodeInquiryTaskHandle;
 const osThreadAttr_t PickupCodeInquiryTask_attributes = {
     .name = " PickupCodeInquiryTask",
     .stack_size = 128 * 6,
-    .priority = (osPriority_t)osPriorityHigh1,
+    .priority = (osPriority_t)osPriorityHigh3,
 };
 /*取件码查询消息队列*/
 osMessageQueueId_t PickupCodeMsgSendQueueHandle;
@@ -58,7 +58,7 @@ const osMessageQueueAttr_t PickupCodeMsgSendQueue_attributes = {
 osThreadId_t rfidDetectionTaskHandle;
 const osThreadAttr_t rfidDetectionTask_attributes = {
     .name = "rfidDetectionTask",
-    .stack_size = 128 * 4,
+    .stack_size = 128 * 8,
     .priority = (osPriority_t)osPriorityNormal2,
 };
 /*超声波距离测量任务*/

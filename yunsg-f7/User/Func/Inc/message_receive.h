@@ -18,6 +18,7 @@ typedef struct
 // 控制消息结构体，包含动作、选项和柜子位置
 typedef struct
 {
+    int clothesID;
     char action[16];        // 动作字段
     char option[16];        // 选项字段
     int cabinetLocation;    // 柜子位置

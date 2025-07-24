@@ -70,6 +70,12 @@ ControlJson_t mqtt_message_parse(MQTTMessage_t msg)
                 {
                     mqtt_json.msg.cabinetLocation = cabinetLocation->valueint;
                 }
+
+                cJSON *clothesID = cJSON_GetObjectItem(message,"clothesID");
+                if (clothesID && cJSON_IsNumber(clothesID))
+                {
+                    mqtt_json.msg.clothesID = clothesID->valueint;
+                }
             }
             cJSON_Delete(root);
         }
