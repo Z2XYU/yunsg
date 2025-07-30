@@ -121,6 +121,7 @@ int main(void)
   MX_IWDG_Init();
   MX_I2C1_Init();
   MX_TIM12_Init();
+  MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
   
   /* USER CODE END 2 */

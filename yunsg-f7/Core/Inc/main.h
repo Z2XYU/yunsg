@@ -63,10 +63,10 @@ void Error_Handler(void);
 #define MOTOR_DIR_1_GPIO_Port GPIOE
 #define MOTOR_DIR_2_Pin GPIO_PIN_4
 #define MOTOR_DIR_2_GPIO_Port GPIOE
-#define MOTOR_EN_1_Pin GPIO_PIN_5
-#define MOTOR_EN_1_GPIO_Port GPIOE
-#define MOTOR_EN_2_Pin GPIO_PIN_6
-#define MOTOR_EN_2_GPIO_Port GPIOE
+#define PTC1_Pin GPIO_PIN_5
+#define PTC1_GPIO_Port GPIOE
+#define PTC2_Pin GPIO_PIN_6
+#define PTC2_GPIO_Port GPIOE
 #define ULTRAVIOLET_SENSOR_Pin GPIO_PIN_1
 #define ULTRAVIOLET_SENSOR_GPIO_Port GPIOC
 #define MOTOR_STEP_1_Pin GPIO_PIN_0
@@ -83,6 +83,10 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOB
 #define RC522_RST_Pin GPIO_PIN_2
 #define RC522_RST_GPIO_Port GPIOB
+#define ETC2_Pin GPIO_PIN_14
+#define ETC2_GPIO_Port GPIOB
+#define ETC1_Pin GPIO_PIN_15
+#define ETC1_GPIO_Port GPIOB
 #define HC_SR04_Trig1_Pin GPIO_PIN_11
 #define HC_SR04_Trig1_GPIO_Port GPIOD
 #define HC_SR04_Trig2_Pin GPIO_PIN_3
@@ -91,8 +95,16 @@ void Error_Handler(void);
 #define PLASMA2_RELAY_GPIO_Port GPIOI
 #define RC522_MOSI_Pin GPIO_PIN_7
 #define RC522_MOSI_GPIO_Port GPIOD
+#define MOTOR_EN_2_Pin GPIO_PIN_9
+#define MOTOR_EN_2_GPIO_Port GPIOG
+#define MOTOR_EN_1_Pin GPIO_PIN_10
+#define MOTOR_EN_1_GPIO_Port GPIOG
 #define LCD_BL_Pin GPIO_PIN_5
 #define LCD_BL_GPIO_Port GPIOB
+#define PCA9685_SCL_Pin GPIO_PIN_6
+#define PCA9685_SCL_GPIO_Port GPIOB
+#define PCA9685_SDA_Pin GPIO_PIN_7
+#define PCA9685_SDA_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
