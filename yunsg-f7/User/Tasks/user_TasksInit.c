@@ -16,6 +16,7 @@
 #include "pickup_code_inquiry.h"
 #include "iwdg_feed_task.h"
 #include "myiic.h"
+#include "plasma.h"
 
 /*Tasks -------------------------------------*/
 /*看门狗喂狗任务*/
@@ -67,13 +68,13 @@ osThreadId_t ultrasonicTaskHandle;
 const osThreadAttr_t ultrasonicTask_attributes = {
     .name = "ultrasonicTask",
     .stack_size = 128 * 8,
-    .priority = (osPriority_t)osPriorityNormal2,
+    .priority = (osPriority_t)osPriorityNormal4,
 };
 /*控制命令接收任务*/
 osThreadId_t CmdReceiveTaskHandle;
 const osThreadAttr_t CmdReceiveTask_attributes = {
     .name = "CmdReceiveTaskTask",
-    .stack_size = 128 * 12,
+    .stack_size = 128 * 16,
     .priority = (osPriority_t)osPriorityHigh,
 };
 /*距离测量完成信号量*/
@@ -87,22 +88,9 @@ osThreadId_t temperatureMeasurementTaskHandle;
 const osThreadAttr_t temperatureMeasurementTask_attributes = {
     .name = "temperatureMeasurementTask",
     .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityAboveNormal,
+    .priority = (osPriority_t)osPriorityNormal3,
 };
-/*ADC传感器采样*/
-osThreadId_t adcSensorsMeasurementTaskHandle;
-const osThreadAttr_t adcSensorsMeasurementTask_attributes = {
-    .name = "adcSensorsMeasurementTask",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityAboveNormal,
-};
-/*onenet信息上传*/
-osThreadId_t onenetMsgUploadTaskHandle;
-const osThreadAttr_t onenetMsgUploadTask_attributes = {
-    .name = "onenetMsgUploadTask",
-    .stack_size = 128 * 8,
-    .priority = (osPriority_t)osPriorityHigh,
-};
+
 
 
 
@@ -130,6 +118,7 @@ void user_tasks_init(void)
     dwt_init();
     sdram_init();
     iic_init();
+    plasma_disable();
 
     /* add queues-------------------------------*/
     MQTTMessageReceiveQueueHandle = osMessageQueueNew(10, sizeof(MQTTMessage_t), &MQTTMessageReceiveQueue_attributes);
@@ -156,6 +145,4 @@ void user_tasks_init(void)
     
     /*温控系统*/
     temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
-    //adcSensorsMeasurementTaskHandle = osThreadNew(adcSensorsTask,NULL,&adcSensorsMeasurementTask_attributes);
-    //onenetMsgUploadTaskHandle = osThreadNew(onenet_upload,NULL,&onenetMsgUploadTask_attributes);
 }

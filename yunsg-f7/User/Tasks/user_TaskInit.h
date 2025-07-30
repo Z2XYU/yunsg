@@ -30,8 +30,6 @@ extern osSemaphoreId_t rfidReadySemaphoreHandle;
 
 /*温度控制*/
 extern osThreadId_t temperatureMeasurementTaskHandle;
-extern osThreadId_t adcSensorsMeasurementTaskHandle;
-extern osThreadId_t onenetMsgUploadTaskHandle;
 
 void user_tasks_init(void);
 

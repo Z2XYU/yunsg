@@ -87,8 +87,6 @@ void motor_set_dir(StepMotor_t *motor,MotorDir_e dir)
 //低速匀速运行即可
 void motor_start(StepMotor_t *motor)
 {
-    uint32_t psc=108000000/1000/START_FREQUENCY;
-    __HAL_TIM_SET_PRESCALER(motor->step_htim,psc);
     HAL_TIM_PWM_Start(motor->step_htim,motor->step_channel);
 }
 

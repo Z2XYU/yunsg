@@ -4,8 +4,6 @@
 
 #define STEP_MOTOR_NUM 2
 
-#define START_FREQUENCY 100
-
 typedef struct
 {
     int id;
