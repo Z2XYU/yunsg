@@ -7,3 +7,5 @@
 
 void ETC_Init(void);
 
+void ETC_SetPower(uint16_t power);
+

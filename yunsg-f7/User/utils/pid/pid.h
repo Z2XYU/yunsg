@@ -16,6 +16,7 @@ typedef struct
     float sample_time;
 } PID_Controller;
 
+void PID_Clear(PID_Controller *pid);
 void PID_Init(PID_Controller *pid, float Kp, float Ki, float Kd, float setpoint, float sample_time);
 float PID_Computer(PID_Controller *pid, float current_value, float current_time);
 

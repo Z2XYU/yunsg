@@ -29,7 +29,7 @@ extern osSemaphoreId_t rfidReadySemaphoreHandle;
 
 
 /*温度控制*/
-extern osThreadId_t temperatureMeasurementTaskHandle;
+extern osThreadId_t temperatureControlTaskHandle;
 
 void user_tasks_init(void);
 

@@ -11,12 +11,13 @@
 #include "tim.h"
 #include "kalman_filter.h"
 #include "stdio.h"
-#include "env_det_task.h"
 #include "http_send.h"
 #include "pickup_code_inquiry.h"
 #include "iwdg_feed_task.h"
 #include "myiic.h"
 #include "plasma.h"
+#include "temperature_control_tasks.h"
+
 
 /*Tasks -------------------------------------*/
 /*看门狗喂狗任务*/
@@ -82,16 +83,13 @@ osSemaphoreId_t distReadySemaphoreHandle;
 /*RFID检测信号量*/
 osSemaphoreId_t rfidReadySemaphoreHandle;
 
-/*环境检测系统*/
-/*SH40温度检测*/
-osThreadId_t temperatureMeasurementTaskHandle;
-const osThreadAttr_t temperatureMeasurementTask_attributes = {
-    .name = "temperatureMeasurementTask",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityNormal3,
+/*温度控制系统*/
+osThreadId_t temperatureControlTaskHandle;
+const osThreadAttr_t temperatureControlTask_attributes = {
+    .name = "temperatureControlTask",
+    .stack_size = 128 * 12,
+    .priority = (osPriority_t)osPriorityHigh,
 };
-
-
 
 
 /* Message queues ----------------------------*/
@@ -144,5 +142,6 @@ void user_tasks_init(void)
 
     
     /*温控系统*/
-    temperatureMeasurementTaskHandle = osThreadNew(SH40Task, NULL, &temperatureMeasurementTask_attributes);
+    temperatureControlTaskHandle = osThreadNew(temperatureControlTask,NULL,&temperatureControlTask_attributes);
+
 }

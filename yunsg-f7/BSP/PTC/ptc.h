@@ -6,3 +6,4 @@
 #define PTC2_CHANNEL 4
 
 void PTC_Init(void);
+void PTC_SetPower(uint16_t power);

@@ -1,4 +1,5 @@
 #include "pid.h"
+#include "cmsis_os.h"
 
 void PID_Init(PID_Controller *pid, float Kp, float Ki, float Kd, float setpoint, float sample_time)
 {
@@ -8,10 +9,18 @@ void PID_Init(PID_Controller *pid, float Kp, float Ki, float Kd, float setpoint,
 
     pid->setpoint = setpoint;
     pid->prev_error = 0.0f;
-    pid->integral = 0.0;
+    pid->integral = 0.0f;
     pid->sample_time = sample_time;
     pid->max_output = 4095;
     pid->min_output = 0;
+    pid->prev_time = 0;
+}
+
+void PID_Clear(PID_Controller *pid)
+{
+    pid->prev_error = 0.0f;
+    pid->integral = 0.0f;
+    pid->prev_time = osKernelGetTickCount() / (float)osKernelGetTickFreq();
 }
 
 // PID控制器计算
@@ -50,7 +59,7 @@ float PID_Computer(PID_Controller *pid, float current_value, float current_time)
         output = pid->min_output;
     }
 
-    //更新上次误差
+    // 更新上次误差
     pid->prev_error = error;
     pid->prev_time = current_time;
 

@@ -59,9 +59,9 @@ void UltrasonicTask(void *argument)
 
         // 滤波处理
         float filtered_dist = kalman_update(&ultrasonic_kf[id], raw_dist);
-
+#if MOTOR_DEBUG
         printf("dist_filter: %d\n", (int)filtered_dist);
-
+#endif
         /*门磁传感器，暂未使用*/
         if (option_g == OPTION_CABINET_OPEN)
         {

@@ -99,6 +99,8 @@ void Error_Handler(void);
 #define MOTOR_EN_2_GPIO_Port GPIOG
 #define MOTOR_EN_1_Pin GPIO_PIN_10
 #define MOTOR_EN_1_GPIO_Port GPIOG
+#define FAN_RELAY_Pin GPIO_PIN_12
+#define FAN_RELAY_GPIO_Port GPIOG
 #define LCD_BL_Pin GPIO_PIN_5
 #define LCD_BL_GPIO_Port GPIOB
 #define PCA9685_SCL_Pin GPIO_PIN_6
