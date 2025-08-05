@@ -7,7 +7,7 @@
 typedef struct
 {
     int site_id;
-    char pickup_code[16];
+    char pickup_code[32];
 }PickupCode_t;
 
 

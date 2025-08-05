@@ -2,6 +2,7 @@
 #include "http_send.h"
 #include "user_TaskInit.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 void pickupCodeInquiryTask(void *argument)
 {
@@ -13,9 +14,11 @@ void pickupCodeInquiryTask(void *argument)
             char* pick_str = pickup_code_msg_packing(&pick);
             
             //printf("pick_str:%s\n",pick_str);
-            osDelay(500);
+            //osDelay(500);
 
             pickup_code_send(pick_str);
+
+            free(pick_str);
         }
     }
 }

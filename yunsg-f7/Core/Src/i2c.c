@@ -145,8 +145,9 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 }
 
 /* USER CODE BEGIN 1 */
+#include "pca9685.h"
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-  
+  I2C_Transmit_Done=1;
 }
 /* USER CODE END 1 */

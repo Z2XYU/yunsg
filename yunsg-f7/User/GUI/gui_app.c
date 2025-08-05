@@ -62,7 +62,7 @@ static void btnm_event_cb(lv_event_t *e)
 
             PickupCode_t code={0};
             code.site_id=13;
-            strcpy(code.pickup_code,txt);
+            strncpy(code.pickup_code,txt,6);
             osMessageQueuePut(PickupCodeMsgSendQueueHandle,&code,0,0);
 
             lv_textarea_set_text(textarea,"");
