@@ -148,6 +148,7 @@ export default {
               action: "return",
               option: "open",
               cabinetLocation: this.location,
+              clothesID:this.leaseOrders.hanfuId
             },
           };
 
@@ -170,6 +171,7 @@ export default {
           action: "return",
           option: "close",
           cabinetLocation: this.location,
+          clothesID:this.leaseOrders.hanfuId
         },
       };
 

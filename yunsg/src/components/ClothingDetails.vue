@@ -161,6 +161,7 @@ export default {
               option: "open",
               // 动作类型，比如打开柜门
               cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+              clothesID:this.clothingData.hanFuId
             },
           };
 
@@ -210,6 +211,7 @@ export default {
 
     closeModal() {
       this.isModalOpen = false;
+      console.log(this.clothingData.hanFuId);
 
       const command = {
         topic: "control",
@@ -218,6 +220,7 @@ export default {
           option: "close",
           // 动作类型，比如打开柜门
           cabinetLocation: this.clothingData.cabinetLocation, // 衣柜位置
+          clothesID:this.clothingData.hanFuId
         },
       };
       this.mqttService.publish("control", JSON.stringify(command));
