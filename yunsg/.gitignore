@@ -54,3 +54,5 @@ coverage/
 
 # Custom
 # 你可以添加更多你想忽略的文件或目录
+src/main.js
+
