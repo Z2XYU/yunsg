@@ -7,6 +7,7 @@ void iwdgFeedTask(void *argument)
     {
         HAL_IWDG_Refresh(&hiwdg);
 
-        osDelay(6000);
+        //内存泄漏BUG修复
+        osDelay(1000);
     }
 }

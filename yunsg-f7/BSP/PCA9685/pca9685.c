@@ -35,13 +35,10 @@ void PCA9685_SetFrequency(uint16_t freq)
 
     // 进入睡眠模式设置频率
     PCA9685_WriteReg(MODE1_REG, 0x80);
-    osDelay(10);
     // 设置分频器
     PCA9685_WriteReg(PRESCALE_REG, prescaler);
-    osDelay(10);
     // 退出睡眠模式
     PCA9685_WriteReg(MODE1_REG, 0xA1);
-    osDelay(10);
 }
 
 // 设置PCA9685 PWM 占空比

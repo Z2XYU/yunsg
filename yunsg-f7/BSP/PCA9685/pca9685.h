@@ -10,7 +10,7 @@
 #define PRESCALE_REG    0xFE
 
 
-extern uint8_t I2C_Transmit_Done;
+extern volatile uint8_t I2C_Transmit_Done;
 
 void PCA9685_Init(void);
 void PCA9685_SetFrequency(uint16_t freq);
