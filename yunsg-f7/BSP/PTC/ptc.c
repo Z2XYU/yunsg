@@ -1,16 +1,16 @@
 #include "ptc.h"
 #include "pca9685.h"
 
-void PTC_Init(void)
+void ptc_init(void)
 {
-    PCA9685_SetPWM(PTC1_CHANNEL,0,0);
-    PCA9685_SetPWM(PTC2_CHANNEL,0,0);
+    pca9685_set_pwm(PTC1_CHANNEL,0,0);
+    pca9685_set_pwm(PTC2_CHANNEL,0,0);
 }
 
-void PTC_SetPower(uint16_t power)
+void ptc_set_power(uint16_t power)
 {
-    PCA9685_SetPWM(PTC1_CHANNEL,0,power);
-    PCA9685_SetPWM(PTC2_CHANNEL,0,power);
+    pca9685_set_pwm(PTC1_CHANNEL,0,power);
+    pca9685_set_pwm(PTC2_CHANNEL,0,power);
 }
 
 

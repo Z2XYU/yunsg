@@ -1,15 +1,15 @@
 #include "etc.h"
 #include "pca9685.h"
 
-void ETC_Init(void)
+void etc_init(void)
 {
-    PCA9685_SetPWM(ETC1_CHANNEL,0,0);
-    PCA9685_SetPWM(ETC2_CHANNEL,0,0);
+    pca9685_set_pwm(ETC1_CHANNEL,0,0);
+    pca9685_set_pwm(ETC2_CHANNEL,0,0);
 }
 
-void ETC_SetPower(uint16_t power)
+void etc_set_power(uint16_t power)
 {
-    PCA9685_SetPWM(ETC1_CHANNEL,0,power);
-    PCA9685_SetPWM(ETC2_CHANNEL,0,power);
+    pca9685_set_pwm(ETC1_CHANNEL,0,power);
+    pca9685_set_pwm(ETC2_CHANNEL,0,power);
 }
 

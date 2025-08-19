@@ -103,10 +103,6 @@ void Error_Handler(void);
 #define FAN_RELAY_GPIO_Port GPIOG
 #define LCD_BL_Pin GPIO_PIN_5
 #define LCD_BL_GPIO_Port GPIOB
-#define PCA9685_SCL_Pin GPIO_PIN_6
-#define PCA9685_SCL_GPIO_Port GPIOB
-#define PCA9685_SDA_Pin GPIO_PIN_7
-#define PCA9685_SDA_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

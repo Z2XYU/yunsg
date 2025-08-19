@@ -1,7 +1,7 @@
 #include "pid.h"
 #include "cmsis_os.h"
 
-void PID_Init(PID_Controller *pid, float Kp, float Ki, float Kd, float setpoint, float sample_time)
+void pid_init(PID_Controller *pid, float Kp, float Ki, float Kd, float setpoint, float sample_time)
 {
     pid->Kp = Kp;
     pid->Ki = Ki;
@@ -16,7 +16,7 @@ void PID_Init(PID_Controller *pid, float Kp, float Ki, float Kd, float setpoint,
     pid->prev_time = 0;
 }
 
-void PID_Clear(PID_Controller *pid)
+void pid_clear(PID_Controller *pid)
 {
     pid->prev_error = 0.0f;
     pid->integral = 0.0f;
@@ -24,7 +24,7 @@ void PID_Clear(PID_Controller *pid)
 }
 
 // PID控制器计算
-float PID_Computer(PID_Controller *pid, float current_value, float current_time)
+float pid_computer(PID_Controller *pid, float current_value, float current_time)
 {
     // 计算时间差
     float delta_time = current_time - pid->prev_time;

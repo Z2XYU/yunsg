@@ -1,32 +1,22 @@
 #include "pca9685.h"
-#include "i2c.h"
 #include "cmsis_os.h"
+#include "myiic.h"
 
-// PCA9685 I2C 写数据
 
-volatile uint8_t I2C_Transmit_Done = 0;
 
-void PCA9685_WriteReg(uint8_t reg, uint8_t data)
+static void pca9685_write_reg(uint8_t reg, uint8_t data)
 {
-    uint8_t txData[2];
-
-    txData[0] = reg;
-    txData[1] = data;
-
-    I2C_Transmit_Done = 0;
-
-    if (HAL_I2C_Master_Transmit_IT(&hi2c1, PCA9685_ADDRESS << 1, txData, 2) != HAL_OK)
-    {
-        Error_Handler();
-    }
-
-    while (I2C_Transmit_Done == 0)
-    {
-        osDelay(1);
-    }
+    iic_start();
+    iic_send_byte(PCA9685_ADDRESS << 1);
+    iic_wait_ack();
+    iic_send_byte(reg);
+    iic_wait_ack();
+    iic_send_byte(data);
+    iic_wait_ack();
+    iic_stop();
 }
 
-void PCA9685_SetFrequency(uint16_t freq)
+void pca9685_set_frequency(uint16_t freq)
 {
     uint8_t prescaler;
 
@@ -34,42 +24,39 @@ void PCA9685_SetFrequency(uint16_t freq)
     prescaler = (uint8_t)(25000000 / (4096 + freq) - 1);
 
     // 进入睡眠模式设置频率
-    PCA9685_WriteReg(MODE1_REG, 0x80);
+    pca9685_write_reg(MODE1_REG, 0x80);
     // 设置分频器
-    PCA9685_WriteReg(PRESCALE_REG, prescaler);
+    pca9685_write_reg(PRESCALE_REG, prescaler);
     // 退出睡眠模式
-    PCA9685_WriteReg(MODE1_REG, 0xA1);
+    pca9685_write_reg(MODE1_REG, 0xA1);
 }
 
-// 设置PCA9685 PWM 占空比
-void PCA9685_SetPWM(uint8_t channel, uint16_t on, uint16_t off)
+void pca9685_init(void)
 {
-    uint8_t data[5];
+    pca9685_set_frequency(1000);
+}
 
+
+void pca9685_set_pwm(uint8_t channel, uint16_t on, uint16_t off)
+{
     uint8_t base_addr = 0x06 + 4 * channel;
 
-    data[0] = base_addr;
-    data[1] = on & 0xff;
-    data[2] = on >> 8;
-    data[3] = off & 0xff;
-    data[4] = off >> 8;
+    iic_start();
+    iic_send_byte(PCA9685_ADDRESS << 1); // 写模式
+    iic_wait_ack();
 
-    // 重置标志位
-    I2C_Transmit_Done = 0;
+    iic_send_byte(base_addr);             // 寄存器地址
+    iic_wait_ack();
 
-    if (HAL_I2C_Master_Transmit_IT(&hi2c1, PCA9685_ADDRESS << 1, data, 5) != HAL_OK)
-    {
-        Error_Handler();
-    }
+    iic_send_byte(on & 0xFF);             // ON 低字节
+    iic_wait_ack();
+    iic_send_byte(on >> 8);               // ON 高字节
+    iic_wait_ack();
+    iic_send_byte(off & 0xFF);            // OFF 低字节
+    iic_wait_ack();
+    iic_send_byte(off >> 8);              // OFF 高字节
+    iic_wait_ack();
 
-    // 等待传输完成
-    while (I2C_Transmit_Done == 0)
-    {
-        osDelay(1);
-    }
+    iic_stop();
 }
 
-void PCA9685_Init(void)
-{
-    PCA9685_SetFrequency(1000);
-}
